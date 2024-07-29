@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps with Local Data</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="fontawesome/css/brands.css" rel="stylesheet" />
+    <link href="fontawesome/css/solid.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MW5OeNFgHZ1Zqd2unW3UNsA6IDLYaFQ&libraries=places,drawing,geometry"></script>
+    <script src="formatprice.js"></script>
+    <script src="textMarker.js"></script>
+    <script src="sidebar.js"></script>
+</head>
+<body>
+    <div id="sidebar">
+        <input type="text" id="search" placeholder="Search for a place">
+        <div class="range-section">
+            <h2>1 KM</h2>
+            <input type="range" id="radius" placeholder="Radius in meters" min="10" max="20000" step="10">
+            <h2>100 KM</h2>
+        </div>
+        <div id="place-list"></div>
+        <div id="place-details" style="display:none;">
+            
+            <div id="image-container">
+                <button id="prev-image"><i class="fa-solid fa-arrow-left"></i></button>
+                <img id="place-image" src="" alt="Place Image">
+                <button id="next-image"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="place-details-info">
+                <p id="place-telephone"></p>
+                <p id="place-price"></p>
+                <p id="place-superficie"></p>
+            
+            </div>
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <script>
+      let map;
+let autocomplete;
+let markers = [];
+let drawingManager;
+let selectedShape;
+let isFetchingData = false;
+let infoWindow;
+let circle;
+let boundsTimeout;
+
+$(document).ready(function() {
+    $.ajax({
+        url: 'default_location.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            let defaultLocation = {lat: parseFloat(data.lat), lng: parseFloat(data.lng)};
+            initMap(defaultLocation);
+        },
+        error: function(error) {
+            console.error('Error fetching default location', error);
+        }
+    });
+
+    $('#search').on('input', function() {
+        const searchQuery = $(this).val();
+        if (searchQuery) {
+            searchPlaces(searchQuery);
+        }
+    });
+
+    $('#radius').on('input', function() {
+        const radius = parseInt($(this).val());
+        if (circle) {
+            circle.setRadius(radius);
+            searchInCircle();
+        }
+    });
+});
+
+function initMap(defaultLocation) {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: defaultLocation,
+        zoom: 13,
+        mapTypeControl: false,
+        zoomControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+    });
+
+    autocomplete = new google.maps.places.Autocomplete(document.getElementById('search'));
+    autocomplete.bindTo('bounds', map);
+
+    autocomplete.addListener('place_changed', function() {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+            return;
+        }
+
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+
+        fetchLocalData(map.getBounds());
+    });
+
+    infoWindow = new google.maps.InfoWindow();
+
+    drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: false,
+        polygonOptions: {
+            editable: true,
+            draggable: true
+        }
+    });
+
+    drawingManager.setMap(map);
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+        if (selectedShape) {
+            selectedShape.setMap(null);
+        }
+        selectedShape = event.overlay;
+        drawingManager.setDrawingMode(null);
+
+        if (selectedShape.type === google.maps.drawing.OverlayType.POLYGON) {
+            google.maps.event.addListener(selectedShape.getPath(), 'set_at', fetchLocalDataInPolygon);
+            google.maps.event.addListener(selectedShape.getPath(), 'insert_at', fetchLocalDataInPolygon);
+        }
+
+        fetchLocalDataInPolygon();
+    });
+
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        clearTimeout(boundsTimeout);
+        boundsTimeout = setTimeout(function() {
+            if (circle) {
+                searchInCircle();  // Trigger search in the circle's bounds
+            }
+            else if (selectedShape && selectedShape.type === google.maps.drawing.OverlayType.POLYGON) {
+            fetchLocalDataInPolygon();  // Trigger search in the polygon's bounds
+            } else {
+                fetchLocalData(map.getBounds());  // Fetch data for the new bounds if no circle
+            }
+        }, 500);
+    });
+
+    createCustomButton('Draw Zone', toggleDrawing, map);
+    createCustomButton('Cancel Polygon', cancelPolygon, map);
+    createCustomButton('Draw Circle', drawCircle, map);
+    createCustomButton('Remove Circle', removeCircle, map);
+    createCustomButton('Zoom In', zoomIn, map);
+    createCustomButton('Zoom Out', zoomOut, map);
+    createCustomButton('Satellite', toggleSatellite, map);
+
+    google.maps.event.addListener(map, 'dblclick', function(event) {
+        handleMapDoubleClick(event.latLng);
+    });
+}
+
+function createCustomButton(text, callback, map) {
+    const controlDiv = document.createElement('div');
+    controlDiv.style.margin = '10px';
+
+    const controlUI = document.createElement('button');
+    controlUI.className = 'custom-button';
+    controlUI.innerHTML = text;
+    controlUI.addEventListener('click', callback);
+
+    controlDiv.appendChild(controlUI);
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
+}
+
+function zoomIn() {
+    map.setZoom(map.getZoom() + 1);
+}
+
+function zoomOut() {
+    map.setZoom(map.getZoom() - 1);
+}
+
+function toggleSatellite() {
+    const currentMapTypeId = map.getMapTypeId();
+    map.setMapTypeId(currentMapTypeId === 'satellite' ? 'roadmap' : 'satellite');
+}
+
+function toggleDrawing() {
+    if (drawingManager.getDrawingMode()) {
+        drawingManager.setDrawingMode(null);
+    } else {
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+    }
+}
+
+function cancelPolygon() {
+    if (selectedShape) {
+        selectedShape.setMap(null);
+        selectedShape = null;
+    }
+}
+
+function drawCircle() {
+    if (circle) {
+        circle.setMap(null);
+        circle = null;
+    }
+
+    circle = new google.maps.Circle({
+        map: map,
+        center: map.getCenter(),
+        radius: 100,
+        editable: true,
+        draggable: true
+    });
+
+    google.maps.event.addListener(circle, 'radius_changed', searchInCircle);
+    google.maps.event.addListener(circle, 'center_changed', searchInCircle);
+    searchInCircle();
+}
+
+function removeCircle() {
+    if (circle) {
+        circle.setMap(null);
+        circle = null;
+    }
+    fetchLocalData(map.getBounds());
+}
+
+function searchInCircle() {
+    fetchLocalData(circle.getBounds());
+}
+
+function fetchLocalData(bounds) {
+    if (isFetchingData) return;
+    isFetchingData = true;
+
+    const params = bounds ? {
+        lat_min: bounds.getSouthWest().lat(),
+        lat_max: bounds.getNorthEast().lat(),
+        lng_min: bounds.getSouthWest().lng(),
+        lng_max: bounds.getNorthEast().lng()
+    } : {};
+
+    $.ajax({
+        url: 'fetch_local_data.php',
+        method: 'GET',
+        data: params,
+        dataType: 'json',
+        success: function(data) {
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+
+    data.forEach(place => {
+        console.log("Place data:", place);  // Log each individual place data
+        const position = {lat: parseFloat(place.Latitude), lng: parseFloat(place.Longitude)};
+        const marker = new TextMarker({
+            position: new google.maps.LatLng(position.lat, position.lng),
+            map: map,
+            price: place.Prix,  // Check this field name matches with your database field
+            superficie: place.Superficie,
+            telephone: place.Telephone,  // Check this field name matches with your database field
+            imageUrl: place.Images_url  // Ensure this field name matches with your database field
+        });
+        markers.push(marker);
+    });
+},
+        error: function(error) {
+            console.error('Error fetching local data', error);
+        },
+        complete: function() {
+            isFetchingData = false;
+        }
+    });
+}
+
+function fetchLocalDataInPolygon() {
+    const bounds = new google.maps.LatLngBounds();
+    selectedShape.getPath().forEach(function(latLng) {
+        bounds.extend(latLng);
+    });
+    fetchLocalData(bounds);
+}
+
+function handleMapDoubleClick(latLng) {
+    const request = {
+        location: latLng,
+        radius: '50',
+        type: ['restaurant', 'bar', 'store', 'point_of_interest']
+    };
+
+    placesService.nearbySearch(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+            results.forEach(place => {
+                const marker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: place.name
+                });
+                marker.addListener('click', function() {
+                    showCustomInfoWindow(marker, place);
+                });
+                markers.push(marker);
+            });
+        }
+    });
+}
+
+    </script>
+</body>
+</html>
