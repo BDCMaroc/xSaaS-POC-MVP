@@ -8,6 +8,8 @@ let isFetchingData = false;
 let infoWindow;
 let circle;
 let boundsTimeout;
+let immoMarkers = []; // To store immovable info markers
+let signalisationMarkers = []; // To store signalisation markers
 
 $(document).ready(function() {
     $.ajax({
@@ -37,14 +39,23 @@ $(document).ready(function() {
             searchInCircle();
         }
     });
-    $('#Confirm-btn').on('click', function() {
-        fetchFilteredData();
+    $('#toggle-immos').on('click', function() {
+        toggleImmos();
     });
-    
-    $('#reset-filters').on('click', function() {
-        resetFilters();
+
+    $('#display-signalisation').on('click', function() {
+        displaySignalisationPlaces();
     });
 });
+function toggleImmos() {
+    immoMarkers.forEach(marker => {
+        if (marker.getMap()) {
+            marker.setMap(null);
+        } else {
+            marker.setMap(map);
+        }
+    });
+}
 
 function initMap(defaultLocation) {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -200,6 +211,59 @@ function removeCircle() {
 
 function searchInCircle() {
     fetchLocalData(circle.getBounds());
+}
+function displaySignalisationPlaces() {
+    // Hide immo markers
+    immoMarkers.forEach(marker => marker.setMap(null));
+
+    // Fetch and display signalisation data
+    fetchSignalisationData();
+}
+
+function fetchSignalisationData() {
+    $.ajax({
+        url: 'fetch_signalisation_data.php', // Endpoint to fetch signalisation data
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            // Clear existing signalisation markers
+            signalisationMarkers.forEach(marker => marker.setMap(null));
+            signalisationMarkers = [];
+
+            // Create new signalisation markers
+            data.forEach(place => {
+                if (place.type === 'future') {
+                    const position = {lat: parseFloat(place.lat), lng: parseFloat(place.lon)};
+                    const marker = new google.maps.Marker({
+                        position: position,
+                        map: map,
+                        icon: {
+                            url: 'new.png', // Path to your custom icon
+                            scaledSize: new google.maps.Size(60, 60) // Adjust the size here
+                        },
+                        title: place.quoi
+                    });
+
+                    marker.addListener('click', function() {
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `<div class="info-window">
+                                <h3>${place.quoi}</h3>
+                                <img src="${place.pj}" alt="Image 1">
+                                <img src="${place.pj2}" alt="Image 2">
+                                <img src="${place.pj3}" alt="Image 3">
+                            </div>`
+                        });
+                        infoWindow.open(map, marker);
+                    });
+
+                    signalisationMarkers.push(marker);
+                }
+            });
+        },
+        error: function(error) {
+            console.error('Error fetching signalisation data', error);
+        }
+    });
 }
 
 function fetchLocalData(bounds) {
