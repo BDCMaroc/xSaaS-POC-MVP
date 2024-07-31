@@ -44,7 +44,7 @@ body, html {
     background: #4CAF50;
     color: white;
     border: none;
-    border-radius: 50px;
+    border-radius: 10px;
     box-shadow: 0 0 10px #787878;
     cursor: pointer;
     margin: 5px;
@@ -447,7 +447,7 @@ button .fa-solid{
     background: #4CAF50;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: 0 0 10px #787878;
     margin: 0 1%;
     cursor: pointer;
@@ -527,7 +527,33 @@ button .fa-solid{
 }
 .bottom-section{
     position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 100;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  width: 430px;
+  height: 71px;
+  border-radius: 20px 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.bottom-section button{
+    box-shadow: none;
+    background-color: white;
+    color: rgb(52, 52, 52);
+    border: 2px gray solid;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 180px;
+}
+.bottom-section button:hover{
+    color: white;
+    border-color: white;
+}
+.bottom-section button.active {
+    color: white;
+    background-color: gray;
+    border-color: white;
 }

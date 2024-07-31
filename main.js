@@ -249,19 +249,28 @@ function fetchSignalisationData() {
                         map: map,
                         icon: {
                             url: 'new.png', // Path to your custom icon
-                            scaledSize: new google.maps.Size(120, 120) // Adjust the size here
+                            scaledSize: new google.maps.Size(80, 80) // Adjust the size here
                         },
                         title: place.quoi
                     });
 
                     marker.addListener('click', function() {
-                        const infoWindow = new google.maps.InfoWindow({
-                            content: `<div class="info-window">
-                                    <p>${place.quoi}</p>
-                                    <img src="https://www.soliquar.com/Upload/uploads/${place.pj}" alt="Image 1">
-                            </div>`
-                        });
-                        infoWindow.open(map, marker);
+                        const infoWindowDiv = document.createElement('div');
+                        infoWindowDiv.className = 'info-window';
+                        const imageUrl = `https://www.soliquar.com/Upload/uploads/${place.pj}`;
+                        infoWindowDiv.innerHTML = `
+                        <button>NEW</button>
+                        <div class="info-details">
+                            <p>${place.quoi.slice(0, 40)}</p>
+                        </div>
+                    `;
+                    infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
+                    infoWindowDiv.style.width = '200px'; // Ensure the width is set
+                    infoWindowDiv.style.height = '150px'; // Ensure the height is set
+
+                    infoWindow.setContent(infoWindowDiv);
+                    infoWindow.open(map, marker);
+                    updateSidebarforfutureplaces(place);
                     });
 
                     signalisationMarkers.push(marker);
@@ -313,7 +322,6 @@ function fetchLocalData(bounds) {
                     const infoWindowDiv = document.createElement('div');
                     infoWindowDiv.className = 'info-window';
                     const imageUrl = place.Images_url.split(',')[0].trim();
-                    console.log(place.Images_url);
                     infoWindowDiv.innerHTML = `
                         <button>NEW</button>
                         <div class="info-details">
@@ -328,7 +336,7 @@ function fetchLocalData(bounds) {
                     infoWindow.setContent(infoWindowDiv);
                     infoWindow.open(map, marker);
                     // Update place details section
-                    updatePlaceDetails(place);
+                    updateSidebar(place);
                 });
                 immoMarkers.push(marker);
                 markers.push(marker);
