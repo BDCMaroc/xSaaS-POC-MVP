@@ -11,9 +11,28 @@ let boundsTimeout;
 let immoMarkers = []; // To store immovable info markers
 let signalisationMarkers = []; // To store signalisation markers
 let displayImmoMarkers = true; // Control variable to display/hide immo markers
-
+let displaySignalisationMarkers = false; // Control variable to display/hide signalisation markers
 
 $(document).ready(function() {
+    // Set the initial active state for the Immos button
+    $('#toggle-immos').addClass('active');
+
+    $('#toggle-immos').on('click', function() {
+        displayImmoMarkers = !displayImmoMarkers;
+        $(this).toggleClass('active');
+        toggleMarkers();
+    });
+
+    $('#display-signalisation').on('click', function() {
+        displaySignalisationMarkers = !displaySignalisationMarkers;
+        $(this).toggleClass('active');
+        if (displaySignalisationMarkers) {
+            fetchSignalisationData();
+        } else {
+            toggleMarkers();
+        }
+    });
+
     $.ajax({
         url: 'default_location.php',
         method: 'GET',
@@ -41,26 +60,32 @@ $(document).ready(function() {
             searchInCircle();
         }
     });
-    $('#toggle-immos').on('click', function() {
-        toggleImmos();
-    });
-
-    $('#display-signalisation').on('click', function() {
-        displaySignalisationPlaces();
-    });
 });
-function toggleImmos() {
-    displayImmoMarkers = true; // Ensure immo markers should be displayed
+
+function toggleMarkers() {
     immoMarkers.forEach(marker => {
-        marker.setMap(map);
+        marker.setMap(displayImmoMarkers ? map : null);
     });
 
-    // Hide signalisation markers
-    signalisationMarkers.forEach(marker => marker.setMap(null));
+    signalisationMarkers.forEach(marker => {
+        marker.setMap(displaySignalisationMarkers ? map : null);
+    });
+
+    updateCluster();
+}
+
+function updateCluster() {
     if (markerCluster) {
         markerCluster.clearMarkers();
-        markerCluster = new markerClusterer.MarkerClusterer({ map, markers: immoMarkers });
     }
+    const visibleMarkers = [
+        ...immoMarkers.filter(marker => marker.getMap() !== null),
+        ...signalisationMarkers.filter(marker => marker.getMap() !== null)
+    ];
+    markerCluster = new markerClusterer.MarkerClusterer({
+        map: map,
+        markers: visibleMarkers
+    });
 }
 
 function initMap(defaultLocation) {
@@ -119,19 +144,11 @@ function initMap(defaultLocation) {
         fetchLocalDataInPolygon();
     });
 
-    google.maps.event.addListener(map, 'bounds_changed', function() {
-        clearTimeout(boundsTimeout);
-        boundsTimeout = setTimeout(function() {
-            if (circle) {
-                searchInCircle();  // Trigger search in the circle's bounds
-            }
-            else if (selectedShape && selectedShape.type === google.maps.drawing.OverlayType.POLYGON) {
-            fetchLocalDataInPolygon();  // Trigger search in the polygon's bounds
-            } else {
-                fetchLocalData(map.getBounds());  // Fetch data for the new bounds if no circle
-            }
-        }, 500);
-    });
+    google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
+        if (displayImmoMarkers || displaySignalisationMarkers) {
+            fetchLocalData(map.getBounds());
+        }
+    }, 500));
 
     createCustomButton('Draw Zone', toggleDrawing, map);
     createCustomButton('Cancel Polygon', cancelPolygon, map);
@@ -200,7 +217,6 @@ function drawCircle() {
         editable: true,
         draggable: true
     });
-    
 
     google.maps.event.addListener(circle, 'radius_changed', searchInCircle);
     google.maps.event.addListener(circle, 'center_changed', searchInCircle);
@@ -218,16 +234,78 @@ function removeCircle() {
 function searchInCircle() {
     fetchLocalData(circle.getBounds());
 }
-function displaySignalisationPlaces() {
-    // Hide immo markers
-    displayImmoMarkers = false;
-    immoMarkers.forEach(marker => marker.setMap(null));
-    if (markerCluster) {
-        markerCluster.clearMarkers();
-    }
 
-    // Fetch and display signalisation data
-    fetchSignalisationData();
+function fetchLocalData(bounds) {
+    if (isFetchingData || !displayImmoMarkers) return; // Add condition to prevent fetching if immo markers should be hidden
+    isFetchingData = true;
+
+    const params = bounds ? {
+        lat_min: bounds.getSouthWest().lat(),
+        lat_max: bounds.getNorthEast().lat(),
+        lng_min: bounds.getSouthWest().lng(),
+        lng_max: bounds.getNorthEast().lng()
+    } : {};
+
+    $.ajax({
+        url: 'fetch_local_data.php',
+        method: 'GET',
+        data: params,
+        dataType: 'json',
+        success: function(data) {
+            // Clear existing markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            // Create new markers
+            data.forEach(place => {
+                const position = {lat: parseFloat(place.Latitude), lng: parseFloat(place.Longitude)};
+                const icon = createMarkerIcon(place.Prix, place.Superficie);
+                const marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(position.lat, position.lng),
+                    map: map,
+                    icon: icon
+                });
+
+                marker.addListener('click', function() {
+                    // Create and display info window
+                    const infoWindowDiv = document.createElement('div');
+                    infoWindowDiv.className = 'info-window';
+                    const imageUrl = place.Images_url.split(',')[0].trim();
+                    infoWindowDiv.innerHTML = `
+                        <button>NEW</button>
+                        <div class="info-details">
+                            <p><strong>Price :</strong> ${place.Prix} DH</p>
+                            <p><strong>Superficie :</strong> ${place.Superficie} </p>
+                        </div>
+                    `;
+                    infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
+                    infoWindowDiv.style.width = '200px';
+                    infoWindowDiv.style.height = '150px';
+                    infoWindow.setContent(infoWindowDiv);
+                    infoWindow.open(map, marker);
+
+                    // Call the updateSidebar function
+                    updateSidebar(place);
+                });
+
+                // Add marker to immoMarkers array
+                immoMarkers.push(marker);
+                markers.push(marker);
+            });
+
+            // Show immo markers if the button is active
+            toggleMarkers();
+
+            // Initialize marker clustering
+            updateCluster();
+        },
+        error: function(error) {
+            console.error('Error fetching local data', error);
+        },
+        complete: function() {
+            isFetchingData = false;
+        }
+    });
 }
 
 function fetchSignalisationData() {
@@ -261,99 +339,27 @@ function fetchSignalisationData() {
                         infoWindowDiv.innerHTML = `
                         <button>NEW</button>
                         <div class="info-details">
-                            <p>${place.quoi.slice(0, 40)}</p>
+                            <p>${place.quoi.slice(0, 40)} ...</p>
                         </div>
                     `;
-                    infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
-                    infoWindowDiv.style.width = '200px'; // Ensure the width is set
-                    infoWindowDiv.style.height = '150px'; // Ensure the height is set
+                        infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
+                        infoWindowDiv.style.width = '200px'; // Ensure the width is set
+                        infoWindowDiv.style.height = '150px'; // Ensure the height is set
 
-                    infoWindow.setContent(infoWindowDiv);
-                    infoWindow.open(map, marker);
-                    updateSidebarforfutureplaces(place);
+                        infoWindow.setContent(infoWindowDiv);
+                        infoWindow.open(map, marker);
+                        updateSidebarforfutureplaces(place);
                     });
 
                     signalisationMarkers.push(marker);
                 }
-                
             });
-            if (markerCluster) {
-                markerCluster.clearMarkers();
-            }
-            markerCluster = new markerClusterer.MarkerClusterer({ map, markers: signalisationMarkers });
+
+            // Show signalisation markers if the button is active
+            toggleMarkers();
         },
         error: function(error) {
             console.error('Error fetching signalisation data', error);
-        }
-    });
-}
-
-function fetchLocalData(bounds) {
-    if (isFetchingData || !displayImmoMarkers) return;
-    isFetchingData = true;
-
-    const params = bounds ? {
-        lat_min: bounds.getSouthWest().lat(),
-        lat_max: bounds.getNorthEast().lat(),
-        lng_min: bounds.getSouthWest().lng(),
-        lng_max: bounds.getNorthEast().lng()
-    } : {};
-
-    $.ajax({
-        url: 'fetch_local_data.php',
-        method: 'GET',
-        data: params,
-        dataType: 'json',
-        success: function(data) {
-            // Clear existing markers
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
-
-            // Create new markers
-            data.forEach(place => {
-                const position = {lat: parseFloat(place.Latitude), lng: parseFloat(place.Longitude)};
-                const icon = createMarkerIcon(place.Prix, place.Superficie);
-                const marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(position.lat, position.lng),
-                    map: map,
-                    icon: icon
-                });
-                marker.addListener('click', function() {
-                    const infoWindowDiv = document.createElement('div');
-                    infoWindowDiv.className = 'info-window';
-                    const imageUrl = place.Images_url.split(',')[0].trim();
-                    infoWindowDiv.innerHTML = `
-                        <button>NEW</button>
-                        <div class="info-details">
-                            <p><strong>Price :</strong> ${place.Prix}</p>
-                            <p><strong>Superficie :</strong> ${place.Superficie} </p>
-                        </div>
-                    `;
-                    infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
-                    infoWindowDiv.style.width = '200px'; // Ensure the width is set
-                    infoWindowDiv.style.height = '150px'; // Ensure the height is set
-
-                    infoWindow.setContent(infoWindowDiv);
-                    infoWindow.open(map, marker);
-                    // Update place details section
-                    updateSidebar(place);
-                });
-                immoMarkers.push(marker);
-                markers.push(marker);
-            });
-            // Initialize marker clustering
-            if (markerCluster) {
-                markerCluster.clearMarkers();
-            }
-            markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
-
-
-        },
-        error: function(error) {
-            console.error('Error fetching local data', error);
-        },
-        complete: function() {
-            isFetchingData = false;
         }
     });
 }
@@ -372,8 +378,6 @@ function createMarkerIcon(price, superficie) {
     </svg>`;
     return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
-
-
 
 function fetchLocalDataInPolygon() {
     const bounds = new google.maps.LatLngBounds();
@@ -407,4 +411,16 @@ function handleMapDoubleClick(latLng) {
             });
         }
     });
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
