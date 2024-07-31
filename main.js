@@ -10,6 +10,8 @@ let circle;
 let boundsTimeout;
 let immoMarkers = []; // To store immovable info markers
 let signalisationMarkers = []; // To store signalisation markers
+let displayImmoMarkers = true; // Control variable to display/hide immo markers
+
 
 $(document).ready(function() {
     $.ajax({
@@ -48,13 +50,17 @@ $(document).ready(function() {
     });
 });
 function toggleImmos() {
+    displayImmoMarkers = true; // Ensure immo markers should be displayed
     immoMarkers.forEach(marker => {
-        if (marker.getMap()) {
-            marker.setMap(null);
-        } else {
-            marker.setMap(map);
-        }
+        marker.setMap(map);
     });
+
+    // Hide signalisation markers
+    signalisationMarkers.forEach(marker => marker.setMap(null));
+    if (markerCluster) {
+        markerCluster.clearMarkers();
+        markerCluster = new markerClusterer.MarkerClusterer({ map, markers: immoMarkers });
+    }
 }
 
 function initMap(defaultLocation) {
@@ -214,7 +220,11 @@ function searchInCircle() {
 }
 function displaySignalisationPlaces() {
     // Hide immo markers
+    displayImmoMarkers = false;
     immoMarkers.forEach(marker => marker.setMap(null));
+    if (markerCluster) {
+        markerCluster.clearMarkers();
+    }
 
     // Fetch and display signalisation data
     fetchSignalisationData();
@@ -239,7 +249,7 @@ function fetchSignalisationData() {
                         map: map,
                         icon: {
                             url: 'new.png', // Path to your custom icon
-                            scaledSize: new google.maps.Size(60, 60) // Adjust the size here
+                            scaledSize: new google.maps.Size(120, 120) // Adjust the size here
                         },
                         title: place.quoi
                     });
@@ -247,10 +257,8 @@ function fetchSignalisationData() {
                     marker.addListener('click', function() {
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="info-window">
-                                <h3>${place.quoi}</h3>
-                                <img src="${place.pj}" alt="Image 1">
-                                <img src="${place.pj2}" alt="Image 2">
-                                <img src="${place.pj3}" alt="Image 3">
+                                    <p>${place.quoi}</p>
+                                    <img src="https://www.soliquar.com/Upload/uploads/${place.pj}" alt="Image 1">
                             </div>`
                         });
                         infoWindow.open(map, marker);
@@ -258,7 +266,12 @@ function fetchSignalisationData() {
 
                     signalisationMarkers.push(marker);
                 }
+                
             });
+            if (markerCluster) {
+                markerCluster.clearMarkers();
+            }
+            markerCluster = new markerClusterer.MarkerClusterer({ map, markers: signalisationMarkers });
         },
         error: function(error) {
             console.error('Error fetching signalisation data', error);
@@ -267,7 +280,7 @@ function fetchSignalisationData() {
 }
 
 function fetchLocalData(bounds) {
-    if (isFetchingData) return;
+    if (isFetchingData || !displayImmoMarkers) return;
     isFetchingData = true;
 
     const params = bounds ? {
@@ -304,7 +317,7 @@ function fetchLocalData(bounds) {
                     infoWindowDiv.innerHTML = `
                         <button>NEW</button>
                         <div class="info-details">
-                            <p><strong>Price :</strong> ${place.Prix} DH</p>
+                            <p><strong>Price :</strong> ${place.Prix}</p>
                             <p><strong>Superficie :</strong> ${place.Superficie} </p>
                         </div>
                     `;
@@ -314,9 +327,10 @@ function fetchLocalData(bounds) {
 
                     infoWindow.setContent(infoWindowDiv);
                     infoWindow.open(map, marker);
-                                        // Update place details section
-                                        updatePlaceDetails(place);
+                    // Update place details section
+                    updatePlaceDetails(place);
                 });
+                immoMarkers.push(marker);
                 markers.push(marker);
             });
             // Initialize marker clustering
