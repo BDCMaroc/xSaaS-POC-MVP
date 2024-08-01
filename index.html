@@ -20,6 +20,11 @@
 
 </head>
 <body>
+    <div class="navigation">
+        <button class="circle"><i class="fa-solid fa-circle"></i> Circle</button>
+        <button class="polygone"><i class="fa-solid fa-circle-nodes"></i> Polygone</button>
+        <button class="sattelite"><i class="fa-solid fa-earth-americas"></i> Sattelite</button>
+    </div>
     <div id="sidebar">
         <input type="text" id="search" placeholder="Search for a place">
         <div class="range-section">
@@ -27,7 +32,6 @@
             <input type="range" id="radius" placeholder="Radius in meters" min="10" max="20000" step="10">
             <h2>100 KM</h2>
         </div>
-        <div id="place-list"></div>
         <div id="filters">
             <div class="filter-section">
                 <input placeholder="min price" type="number" id="min-price" name="min-price">

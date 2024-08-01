@@ -2,19 +2,14 @@ let map;
 let autocomplete;
 let markers = [];
 let markerCluster;
-let drawingManager;
-let selectedShape;
 let isFetchingData = false;
 let infoWindow;
-let circle;
-let boundsTimeout;
-let immoMarkers = []; // To store immovable info markers
-let signalisationMarkers = []; // To store signalisation markers
-let displayImmoMarkers = true; // Control variable to display/hide immo markers
-let displaySignalisationMarkers = false; // Control variable to display/hide signalisation markers
+let immoMarkers = [];
+let signalisationMarkers = [];
+let displayImmoMarkers = true;
+let displaySignalisationMarkers = false;
 
 $(document).ready(function() {
-    // Set the initial active state for the Immos button
     $('#toggle-immos').addClass('active');
 
     $('#toggle-immos').on('click', function() {
@@ -52,17 +47,10 @@ $(document).ready(function() {
             searchPlaces(searchQuery);
         }
     });
-
-    $('#radius').on('input', function() {
-        const radius = parseInt($(this).val());
-        if (circle) {
-            circle.setRadius(radius);
-            searchInCircle();
-        }
-    });
 });
 
 function toggleMarkers() {
+    console.log('Toggling markers. Immo: ', displayImmoMarkers, ' Signalisation: ', displaySignalisationMarkers);
     immoMarkers.forEach(marker => {
         marker.setMap(displayImmoMarkers ? map : null);
     });
@@ -75,6 +63,7 @@ function toggleMarkers() {
 }
 
 function updateCluster() {
+    console.log('Updating cluster with visible markers');
     if (markerCluster) {
         markerCluster.clearMarkers();
     }
@@ -119,124 +108,14 @@ function initMap(defaultLocation) {
 
     infoWindow = new google.maps.InfoWindow();
 
-    drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: null,
-        drawingControl: false,
-        polygonOptions: {
-            editable: true,
-            draggable: true
-        }
-    });
-
-    drawingManager.setMap(map);
-    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-        if (selectedShape) {
-            selectedShape.setMap(null);
-        }
-        selectedShape = event.overlay;
-        drawingManager.setDrawingMode(null);
-
-        if (selectedShape.type === google.maps.drawing.OverlayType.POLYGON) {
-            google.maps.event.addListener(selectedShape.getPath(), 'set_at', fetchLocalDataInPolygon);
-            google.maps.event.addListener(selectedShape.getPath(), 'insert_at', fetchLocalDataInPolygon);
-        }
-
-        fetchLocalDataInPolygon();
-    });
-
     google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
-        if (displayImmoMarkers || displaySignalisationMarkers) {
-            fetchLocalData(map.getBounds());
-        }
+        console.log('Map bounds changed');
+        fetchLocalData(map.getBounds());
     }, 500));
-
-    createCustomButton('Draw Zone', toggleDrawing, map);
-    createCustomButton('Cancel Polygon', cancelPolygon, map);
-    createCustomButton('Draw Circle', drawCircle, map);
-    createCustomButton('Remove Circle', removeCircle, map);
-    createCustomButton('Zoom In', zoomIn, map);
-    createCustomButton('Zoom Out', zoomOut, map);
-    createCustomButton('Satellite', toggleSatellite, map);
-
-    google.maps.event.addListener(map, 'dblclick', function(event) {
-        handleMapDoubleClick(event.latLng);
-    });
-}
-
-function createCustomButton(text, callback, map) {
-    const controlDiv = document.createElement('div');
-    controlDiv.style.margin = '10px';
-
-    const controlUI = document.createElement('button');
-    controlUI.className = 'custom-button';
-    controlUI.innerHTML = text;
-    controlUI.addEventListener('click', callback);
-
-    controlDiv.appendChild(controlUI);
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
-}
-
-function zoomIn() {
-    map.setZoom(map.getZoom() + 1);
-}
-
-function zoomOut() {
-    map.setZoom(map.getZoom() - 1);
-}
-
-function toggleSatellite() {
-    const currentMapTypeId = map.getMapTypeId();
-    map.setMapTypeId(currentMapTypeId === 'satellite' ? 'roadmap' : 'satellite');
-}
-
-function toggleDrawing() {
-    if (drawingManager.getDrawingMode()) {
-        drawingManager.setDrawingMode(null);
-    } else {
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-    }
-}
-
-function cancelPolygon() {
-    if (selectedShape) {
-        selectedShape.setMap(null);
-        selectedShape = null;
-    }
-}
-
-function drawCircle() {
-    if (circle) {
-        circle.setMap(null);
-        circle = null;
-    }
-
-    circle = new google.maps.Circle({
-        map: map,
-        center: map.getCenter(),
-        radius: 100,
-        editable: true,
-        draggable: true
-    });
-
-    google.maps.event.addListener(circle, 'radius_changed', searchInCircle);
-    google.maps.event.addListener(circle, 'center_changed', searchInCircle);
-    searchInCircle();
-}
-
-function removeCircle() {
-    if (circle) {
-        circle.setMap(null);
-        circle = null;
-    }
-    fetchLocalData(map.getBounds());
-}
-
-function searchInCircle() {
-    fetchLocalData(circle.getBounds());
 }
 
 function fetchLocalData(bounds) {
-    if (isFetchingData || !displayImmoMarkers) return; // Add condition to prevent fetching if immo markers should be hidden
+    if (isFetchingData || !displayImmoMarkers) return;
     isFetchingData = true;
 
     const params = bounds ? {
@@ -246,18 +125,20 @@ function fetchLocalData(bounds) {
         lng_max: bounds.getNorthEast().lng()
     } : {};
 
+    console.log('Fetching local data with params:', params);
+
     $.ajax({
         url: 'fetch_local_data.php',
         method: 'GET',
         data: params,
         dataType: 'json',
         success: function(data) {
-            // Clear existing markers
+            console.log('Fetched local data:', data);
+
             markers.forEach(marker => marker.setMap(null));
             markers = [];
 
-            // Create new markers
-            data.forEach(place => {
+            const newMarkers = data.map(place => {
                 const position = {lat: parseFloat(place.Latitude), lng: parseFloat(place.Longitude)};
                 const icon = createMarkerIcon(place.Prix, place.Superficie);
                 const marker = new google.maps.Marker({
@@ -267,7 +148,6 @@ function fetchLocalData(bounds) {
                 });
 
                 marker.addListener('click', function() {
-                    // Create and display info window
                     const infoWindowDiv = document.createElement('div');
                     infoWindowDiv.className = 'info-window';
                     const imageUrl = place.Images_url.split(',')[0].trim();
@@ -284,19 +164,15 @@ function fetchLocalData(bounds) {
                     infoWindow.setContent(infoWindowDiv);
                     infoWindow.open(map, marker);
 
-                    // Call the updateSidebar function
                     updateSidebar(place);
                 });
 
-                // Add marker to immoMarkers array
                 immoMarkers.push(marker);
-                markers.push(marker);
+                return marker;
             });
 
-            // Show immo markers if the button is active
+            markers = newMarkers;
             toggleMarkers();
-
-            // Initialize marker clustering
             updateCluster();
         },
         error: function(error) {
@@ -310,24 +186,24 @@ function fetchLocalData(bounds) {
 
 function fetchSignalisationData() {
     $.ajax({
-        url: 'fetch_signalisation_data.php', // Endpoint to fetch signalisation data
+        url: 'fetch_signalisation_data.php',
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            // Clear existing signalisation markers
+            console.log('Fetched signalisation data:', data);
+
             signalisationMarkers.forEach(marker => marker.setMap(null));
             signalisationMarkers = [];
 
-            // Create new signalisation markers
-            data.forEach(place => {
+            const newMarkers = data.map(place => {
                 if (place.type === 'future') {
                     const position = {lat: parseFloat(place.lat), lng: parseFloat(place.lon)};
                     const marker = new google.maps.Marker({
                         position: position,
                         map: map,
                         icon: {
-                            url: 'new.png', // Path to your custom icon
-                            scaledSize: new google.maps.Size(80, 80) // Adjust the size here
+                            url: 'new.png',
+                            scaledSize: new google.maps.Size(80, 80)
                         },
                         title: place.quoi
                     });
@@ -343,25 +219,37 @@ function fetchSignalisationData() {
                         </div>
                     `;
                         infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
-                        infoWindowDiv.style.width = '200px'; // Ensure the width is set
-                        infoWindowDiv.style.height = '150px'; // Ensure the height is set
-
+                        infoWindowDiv.style.width = '200px';
+                        infoWindowDiv.style.height = '150px';
                         infoWindow.setContent(infoWindowDiv);
                         infoWindow.open(map, marker);
                         updateSidebarforfutureplaces(place);
                     });
 
                     signalisationMarkers.push(marker);
+                    return marker;
                 }
-            });
+            }).filter(marker => marker !== undefined);
 
-            // Show signalisation markers if the button is active
+            signalisationMarkers = newMarkers;
             toggleMarkers();
         },
         error: function(error) {
             console.error('Error fetching signalisation data', error);
         }
     });
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 function createMarkerIcon(price, superficie) {
@@ -377,50 +265,4 @@ function createMarkerIcon(price, superficie) {
         <path d="M 45 60 L 55 60 L 50 70 Z" style="fill:#4CAF50;" />
     </svg>`;
     return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-}
-
-function fetchLocalDataInPolygon() {
-    const bounds = new google.maps.LatLngBounds();
-    selectedShape.getPath().forEach(function(latLng) {
-        bounds.extend(latLng);
-    });
-    fetchLocalData(bounds);
-}
-
-function handleMapDoubleClick(latLng) {
-    const request = {
-        location: latLng,
-        radius: '50',
-        type: ['restaurant', 'bar', 'store', 'point_of_interest']
-    };
-
-    placesService.nearbySearch(request, function(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
-            results.forEach(place => {
-                const marker = new google.maps.Marker({
-                    position: place.geometry.location,
-                    map: map,
-                    title: place.name
-                });
-                marker.addListener('click', function() {
-                    showCustomInfoWindow(marker, place);
-                });
-                markers.push(marker);
-            });
-        }
-    });
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
