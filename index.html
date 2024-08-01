@@ -1,50 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Google Maps with Local Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEENWAY</title>
+    <link rel="icon" href="icons/smallogo.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="fontawesome/css/fontawesome.css" rel="stylesheet" />
-    <link href="fontawesome/css/brands.css" rel="stylesheet" />
-    <link href="fontawesome/css/solid.css" rel="stylesheet" />
+    <link href="fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="fontawesome/css/brands.css" rel="stylesheet">
+    <link href="fontawesome/css/solid.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MW5OeNFgHZ1Zqd2unW3UNsA6IDLYaFQ&libraries=places,drawing,geometry"></script>
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     <script src="formatprice.js"></script>
     <script src="sidebar.js"></script>
-    <script src="main.js"></script>
-    <script src="place_detail.js"></script>
-    <script src="filter.js"></script>
-
+    <script src="events.js"></script>
+    <script src="map.js"></script>
+    <script src="drawing.js"></script>
+    <script src="markers.js"></script>
+    <script src="fetchData.js"></script>
 </head>
 <body>
+    <div class="bottom-section">
+        <button id="toggle-immos" class="custom-button active"><i class="fa-solid fa-location-dot"></i> Toggle Immos</button>
+        <button id="display-signalisation" class="custom-button"><i class="fa-solid fa-person-digging"></i></i> Future Places</button>
+    </div>
     <div class="navigation">
         <button class="circle"><i class="fa-solid fa-circle"></i> Circle</button>
         <button class="polygone"><i class="fa-solid fa-circle-nodes"></i> Polygone</button>
         <button class="sattelite"><i class="fa-solid fa-earth-americas"></i> Sattelite</button>
     </div>
     <div id="sidebar">
-        <input type="text" id="search" placeholder="Search for a place">
-        <div class="range-section">
-            <h2>1 KM</h2>
-            <input type="range" id="radius" placeholder="Radius in meters" min="10" max="20000" step="10">
-            <h2>100 KM</h2>
+        <div class="logo">
+            <img src="icons/logotrs.png" alt="" srcset="">
         </div>
-        <div id="filters">
-            <div class="filter-section">
-                <input placeholder="min price" type="number" id="min-price" name="min-price">
-                <input placeholder="max price" type="number" id="max-price" name="max-price">
-            </div>
-            <div class="filter-section">
-                <input placeholder="min superficie" type="number" id="min-superficie" name="min-superficie">
-                <input placeholder="max superficie" type="number" id="max-superficie" name="max-superficie">
-            </div>
-            <button id="reset-filters" class="custom-button">Reset Filters</button>
-            <button id="Confirm-btn" class="custom-button">Confirm</button>
-        </div>
-        
         <div id="place-details" style="display:none;">
             
             <div id="image-container">
@@ -59,10 +51,33 @@
             
             </div>
         </div>
-            <div class="bottom-section">
-        <button id="toggle-immos" class="custom-button active"><i class="fa-solid fa-location-dot"></i> Toggle Immos</button>
-        <button id="display-signalisation" class="custom-button"><i class="fa-solid fa-person-digging"></i></i> Future Places</button>
-    </div>
+        <input type="text" id="search" placeholder="Search for a place">
+        <div class="range-section">
+            <h2>1 KM</h2>
+            <input type="range" id="radius" placeholder="Radius in meters" min="10" max="20000" step="10">
+            <h2>100 KM</h2>
+        </div>
+
+        <div id="filters"  style="display: none;">
+            <div class="filter-section">
+                <input placeholder="min price" type="number" id="min-price" name="min-price">
+                <input placeholder="max price" type="number" id="max-price" name="max-price">
+            </div>
+            <div class="filter-section">
+                <input placeholder="min superficie" type="number" id="min-superficie" name="min-superficie">
+                <input placeholder="max superficie" type="number" id="max-superficie" name="max-superficie">
+            </div>
+            <div class="filter-section">
+            <button id="reset-filters" class="custom-button">Reset Filters</button>
+            <button id="Confirm-btn" class="custom-button">Confirm</button>
+        </div>
+        </div>
+        <div id="toggle-filters" class="toggle-filters">
+            <button id="toggle-filters-btn" class="custom-button"><i class="fa-solid fa-circle-chevron-down"></i></button>
+        </div>
+        
+        
+            
     </div>
     <div id="map"></div>
 
