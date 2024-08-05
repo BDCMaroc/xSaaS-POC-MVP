@@ -13,7 +13,7 @@
     <link href="fontawesome/css/brands.css" rel="stylesheet">
     <link href="fontawesome/css/solid.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MW5OeNFgHZ1Zqd2unW3UNsA6IDLYaFQ&libraries=places,drawing,geometry"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MW5OeNFgHZ1Zqd2unW3UNsA6IDLYaFQ&libraries=places,drawing,geometry"></script>
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     <script src="formatprice.js"></script>
     <script src="sidebar.js"></script>
@@ -26,11 +26,10 @@
 <body>
     <div class="bottom-section">
         <button id="toggle-immos" class="custom-button active"><i class="fa-solid fa-location-dot"></i> Toggle Immos</button>
-        <button id="display-signalisation" class="custom-button"><i class="fa-solid fa-person-digging"></i></i> Future Places</button>
+        <button id="display-signalisation" class="custom-button"><i class="fa-solid fa-triangle-exclamation"></i>Signalling Places</button>
     </div>
     <div class="navigation">
-        <button class="circle"><i class="fa-solid fa-circle"></i> Circle</button>
-        <button class="polygone"><i class="fa-solid fa-circle-nodes"></i> Polygone</button>
+        <button id="toggle-drawing" class="custom-button"><i class="fa-solid fa-pencil-alt"></i> Draw</button>
         <button class="sattelite"><i class="fa-solid fa-earth-americas"></i> Sattelite</button>
     </div>
     <div id="sidebar">

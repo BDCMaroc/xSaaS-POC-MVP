@@ -5,23 +5,56 @@ let signalisationMarkers = [];
 let displayImmoMarkers = true;
 let displaySignalisationMarkers = false;
 
+function updateClusterMarkers() {
+    console.log('Updating cluster with visible markers');
+    if (markerCluster) {
+        markerCluster.clearMarkers();
+    }
+
+    const visibleMarkers = immoMarkers.filter(marker => marker.getMap() !== null);
+    markerCluster = new markerClusterer.MarkerClusterer({
+        map: map,
+        markers: visibleMarkers,
+        renderer: {
+            render: ({ count, position }) => {
+                const div = document.createElement('div');
+                div.style.backgroundColor = 'red';
+                div.style.border = '2px solid white';
+                div.style.borderRadius = '50%';
+                div.style.color = 'white';
+                div.style.textAlign = 'center';
+                div.style.lineHeight = '40px';
+                div.style.width = '40px';
+                div.style.height = '40px';
+                div.innerText = count;
+                return new google.maps.Marker({
+                    position,
+                    icon: {
+                        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(div.outerHTML),
+                        scaledSize: new google.maps.Size(40, 40),
+                    },
+                });
+            },
+        },
+    });
+}
+
 function toggleMarkers() {
     immoMarkers.forEach(marker => marker.setMap(displayImmoMarkers ? map : null));
     signalisationMarkers.forEach(marker => marker.setMap(displaySignalisationMarkers ? map : null));
     updateCluster();
 }
 
+
 function updateCluster() {
     if (markerCluster) {
         markerCluster.clearMarkers();
     }
-    const visibleMarkers = [
-        ...immoMarkers.filter(marker => marker.getMap() !== null),
-        ...signalisationMarkers.filter(marker => marker.getMap() !== null)
-    ];
+    const visibleMarkers = immoMarkers.filter(marker => marker.getMap() !== null);
     markerCluster = new markerClusterer.MarkerClusterer({
         map: map,
         markers: visibleMarkers
+        
     });
 }
 
@@ -39,3 +72,22 @@ function createMarkerIcon(price, superficie) {
     </svg>`;
     return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
+function displayMarkerCount(totalMarkers) {
+    const countDiv = document.getElementById('marker-count');
+    if (!countDiv) {
+        const div = document.createElement('div');
+        div.id = 'marker-count';
+        div.style.position = 'absolute';
+        div.style.bottom = '10px';
+        div.style.right = '10px';
+        div.style.padding = '10px 20px';
+        div.style.backgroundColor = 'white';
+        div.style.border = '3px solid grey';
+        div.style.borderRadius = '10px';
+        div.style.zIndex = '1000';
+        document.body.appendChild(div);
+    }
+
+    document.getElementById('marker-count').innerText = `Showing ${markers.length} of ${totalMarkers} places`;
+}
+

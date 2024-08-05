@@ -9,7 +9,7 @@ body, html {
 }
 #map {
     height: 100vh;
-    width: 100%;
+    width: 70%;
     position: relative;
 }
 .navbarmaps{
@@ -21,7 +21,6 @@ body, html {
     border-bottom: 5px solid green;
 }
 #sidebar {
-    position: fixed;
     top: 0;
     left: 0;
     height: 100%;
@@ -29,7 +28,7 @@ body, html {
     overflow-y: auto;
     box-sizing: border-box;
     padding: 10px;
-    background: #46464694;
+    background: #242f3e;
     border-left: 1px solid #ccc;
     backdrop-filter: blur(10px);
     z-index: 100;
@@ -550,17 +549,20 @@ button .fa-solid{
 .bottom-section{
     position: absolute;
   bottom: 0;
-  right: 0;
+  right: 35%;
   z-index: 100;
   background-color: rgba(109, 109, 109, 0.349);
   backdrop-filter: blur(10px);
   width: 430px;
   height: 71px;
   border: 2px solid white;
-  border-radius: 20px 0 0 0;
+    border-bottom: 0;
+  border-radius: 20px 20px 0 0;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  transform: translateX(50%);
+  border-bottom: 0;
 }
 .bottom-section button , .navigation button{
     box-shadow: none;
@@ -570,7 +572,7 @@ button .fa-solid{
     display: flex;
     align-items: center;
     justify-content: space-around;
-    width: 180px;
+    width: 190px;
 }
 .bottom-section button:hover {
     color: white;
@@ -602,7 +604,7 @@ button .fa-solid{
 .navigation button:hover{
     background-color: #ffbc1c;
     color: white;
-    border-color: white;
+    border-color: #ffffff;
     width: 135px;
     margin: 30px;
 }
