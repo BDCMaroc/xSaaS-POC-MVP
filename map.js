@@ -2,8 +2,7 @@ let map;
 let autocomplete;
 let infoWindow;
 let drawingManager;
-let selectedShape;
-let circle;
+let drawnShape = null;
 
 function initMap(defaultLocation) {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -55,19 +54,25 @@ function initMap(defaultLocation) {
     google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
         fetchLocalData(map.getBounds());
         
+    }, 1));
+
+    infoWindow = new google.maps.InfoWindow();
+
+    google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
+        fetchLocalData(map.getBounds());
     }, 500));
+
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+        const zoom = map.getZoom();
+        immoMarkers.forEach(marker => {
+            marker.setIcon(zoom > 16 ? createRedCircleIcon() : createDefaultIcon(marker.price, marker.superficie));
+        });
+    });
+
 
     drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: null,
         drawingControl: false,
-        circleOptions: {
-            fillColor: '#ffff00',
-            fillOpacity: 0.5,
-            strokeWeight: 1,
-            clickable: false,
-            editable: true,
-            zIndex: 1
-        },
         polygonOptions: {
             fillColor: '#ffff00',
             fillOpacity: 0.5,
@@ -78,6 +83,15 @@ function initMap(defaultLocation) {
         }
     });
     drawingManager.setMap(map);
+
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+        if (drawnShape) {
+            drawnShape.setMap(null);
+        }
+        drawnShape = event.overlay;
+        drawingManager.setDrawingMode(null);
+        fetchLocalDataInPolygon(drawnShape);
+    });
 }
 
 function toggleSatellite() {

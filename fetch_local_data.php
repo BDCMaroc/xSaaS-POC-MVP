@@ -17,7 +17,7 @@ if ($lat_min === false || $lat_max === false || $lng_min === false || $lng_max =
 $sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone 
         FROM immo_infos_with_gps 
         WHERE Latitude BETWEEN ? AND ? AND Longitude BETWEEN ? AND ? 
-        LIMIT 1000"; // Limit the results to avoid overwhelming the client
+        LIMIT 100000"; // Limit the results to avoid overwhelming the client
 
 $stmt = $conn->prepare($sql); // Prepare the SQL statement
 

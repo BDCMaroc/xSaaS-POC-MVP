@@ -1,28 +1,31 @@
 <?php
-include 'connexion.php';
+include 'connexion.php';  // Include the database connection
 
-$data = json_decode(file_get_contents("php://input"), true);
-$coordinates = $data['coordinates'];
+// Retrieve and decode the input parameters
+$input = json_decode(file_get_contents('php://input'), true);
+$coordinates = $input['coordinates'];
 
-if (!is_array($coordinates) || empty($coordinates)) {
-    echo json_encode(['error' => 'Invalid input parameters']);
-    exit;
+// Prepare the SQL query
+$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone 
+        FROM immo_infos_with_gps 
+        WHERE ST_CONTAINS(ST_GeomFromText('POLYGON((";
+
+foreach ($coordinates as $coordinate) {
+    $sql .= $coordinate['lng'] . ' ' . $coordinate['lat'] . ',';
 }
 
-$poly = array_map(function($coord) {
-    return "POINT({$coord['lng']} {$coord['lat']})";
-}, $coordinates);
+// Close the polygon by adding the first point at the end
+$sql .= $coordinates[0]['lng'] . ' ' . $coordinates[0]['lat'];
 
-$polyString = implode(',', $poly);
-$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone
-        FROM immo_infos_with_gps
-        WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON(({$polyString}))'), POINT(Longitude, Latitude))
-        LIMIT 1000";
+$sql .= "))'), POINT(Longitude, Latitude))";
 
 $result = $conn->query($sql);
-$data = array();
-while ($row = $result->fetch_assoc()) {
-    $data[] = $row;
+$data = [];
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
 }
 
 $conn->close();

@@ -1,10 +1,11 @@
+let schoolMarkers = [];
+let displaySchools = false;
 $(document).ready(function() {
     // Initial setup
     $('#toggle-immos').addClass('active');
     $('#toggle-immos').on('click', toggleImmoMarkers);
     $('#display-signalisation').on('click', toggleSignalisationMarkers);
-    $('.circle').on('click', toggleDrawCircle);
-    $('.polygone').on('click', toggleDrawPolygon);
+    $('#toggle-drawing').on('click', toggleDrawingMode);
     $('.sattelite').on('click', toggleSatellite);
     $('#toggle-filters-btn').on('click', function() {
         const filters = $('#filters');
@@ -16,6 +17,16 @@ $(document).ready(function() {
                 toggleButton.html('<i class="fa-solid fa-circle-chevron-down"></i>');
             }
         });
+    });
+    $('#school-toggle').on('click', function() {
+        displaySchools = !displaySchools;
+        if (displaySchools) {
+            fetchSchools();
+            $('#school-toggle').addClass('active').css({backgroundColor: '#ffbc1c', color: 'white'});
+        } else {
+            clearSchoolMarkers();
+            $('#school-toggle').removeClass('active').css({backgroundColor: '', color: ''});
+        }
     });
     // Fetch default location
     $.ajax({
@@ -40,6 +51,52 @@ $(document).ready(function() {
     });
 });
 
+function fetchSchools() {
+    const service = new google.maps.places.PlacesService(map);
+    const bounds = map.getBounds();
+    const request = {
+        bounds: bounds,
+        type: ['school'],
+    };
+
+    service.nearbySearch(request, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            results.forEach(place => {
+                const marker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: place.name,
+                    icon: {
+                        url: 'icons/school_logo.png',
+                        scaledSize: new google.maps.Size(60, 60)
+                    },
+                });
+                marker.addListener('click', function() {
+                    const infoWindowDiv = document.createElement('div');
+                    infoWindowDiv.className = 'info-window';
+                    infoWindowDiv.innerHTML = `
+                        <div class="info-details">
+                            <p style="color : grey;"><i class="fa-solid fa-school"></i> ${place.name}</p>
+                        </div>
+                    `;
+                    infoWindowDiv.style.width = '200px';
+                    infoWindowDiv.style.height = '40px';
+                    infoWindow.setContent(infoWindowDiv);
+                    infoWindow.open(map, marker);
+                });
+
+
+                schoolMarkers.push(marker);
+            });
+        }
+    });
+}
+
+function clearSchoolMarkers() {
+    schoolMarkers.forEach(marker => marker.setMap(null));
+    schoolMarkers = [];
+}
+
 function toggleImmoMarkers() {
     displayImmoMarkers = !displayImmoMarkers;
     $('#toggle-immos').toggleClass('active');
@@ -56,28 +113,21 @@ function toggleSignalisationMarkers() {
     }
 }
 
-function toggleDrawCircle() {
-    if ($('.circle').hasClass('active')) {
+function toggleDrawingMode() {
+    if ($('#toggle-drawing').hasClass('active')) {
         clearSelectedShape();
         drawingManager.setDrawingMode(null);
-        $('.circle').removeClass('active').html('<i class="fa-solid fa-circle"></i> Circle').css({backgroundColor: '', color: ''});
+        $('#toggle-drawing').removeClass('active').html('<i class="fa-solid fa-draw-polygon"></i> Draw').css({backgroundColor: '', color: ''});
     } else {
         clearSelectedShape();
-        drawCircle();
-        $('.circle').addClass('active').html('<i class="fa-regular fa-circle-xmark"></i> Circle').css({backgroundColor: '#ffbc1c', color: 'white'});
-        $('.polygone').removeClass('active').html('<i class="fa-solid fa-circle-nodes"></i> Polygone').css({backgroundColor: '', color: ''});
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        $('#toggle-drawing').addClass('active').html('<i class="fa-solid fa-ban"></i> Cancel').css({backgroundColor: '#ffbc1c', color: 'white'});
     }
 }
 
-function toggleDrawPolygon() {
-    if ($('.polygone').hasClass('active')) {
-        clearSelectedShape();
-        drawingManager.setDrawingMode(null);
-        $('.polygone').removeClass('active').html('<i class="fa-solid fa-circle-nodes"></i> Polygone').css({backgroundColor: '', color: ''});
-    } else {
-        clearSelectedShape();
-        drawPolygon();
-        $('.polygone').addClass('active').html('<i class="fa-regular fa-circle-xmark"></i> Polygone').css({backgroundColor: '#ffbc1c', color: 'white'});
-        $('.circle').removeClass('active').html('<i class="fa-solid fa-circle"></i> Circle').css({backgroundColor: '', color: ''});
+function clearSelectedShape() {
+    if (drawnShape) {
+        drawnShape.setMap(null);
+        drawnShape = null;
     }
 }
