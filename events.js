@@ -56,7 +56,8 @@ function fetchSchools() {
     const bounds = map.getBounds();
     const request = {
         bounds: bounds,
-        type: ['school'],
+        type: ['secondary_school'], //  secondary_school mosque amusement_park bakery bank bus_station school  cafe convenience_store (dentist doctor)  gas_station gym hair_care hospital park  pharmacy primary_school restaurant shopping_mall supermar taxi_stand  train_station  travel_agency  university ket  secondary_school  
+
     };
 
     service.nearbySearch(request, function(results, status) {
