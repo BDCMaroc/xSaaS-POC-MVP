@@ -78,10 +78,13 @@ function displayMarkerCount(totalMarkers) {
         const div = document.createElement('div');
         div.id = 'marker-count';
         div.style.position = 'absolute';
-        div.style.bottom = '10px';
+        div.style.bottom = '15px';
         div.style.right = '10px';
+        div.style.fontSize = 'large';
+        div.style.width = '240px';
         div.style.padding = '10px 20px';
-        div.style.backgroundColor = 'white';
+        div.style.backgroundColor = 'black';
+        div.style.color = 'white';
         div.style.border = '3px solid grey';
         div.style.borderRadius = '10px';
         div.style.zIndex = '1000';

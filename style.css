@@ -620,9 +620,10 @@ button .fa-solid{
 #school-filters {
     position: absolute;
     bottom: 10px;
-    left: 31%;
+    left: 40%;
     z-index: 1000;
-    width: 250px;
+    width: 140px;
+    height: 56px;
 }
 
 #school-toggle {
@@ -647,3 +648,46 @@ button .fa-solid{
     margin-top: 10px;
 }
 
+#nearby-filters {
+    position: absolute;
+    bottom: 10px;
+    left: 31%;
+    z-index: 1000;
+    width: 140px;
+    height: 56px;
+}
+
+#nearby-toggle {
+    background: rgb(20, 20, 20);
+    border: 2px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 150px;
+    background-color: white;
+    border: 2px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 1001;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content div {
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    text-align: right;
+    cursor: pointer;
+}
