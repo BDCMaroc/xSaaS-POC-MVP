@@ -1,14 +1,66 @@
+:root {
+    --primary-color: #ffbc1c;
+    --secondary-color: #242f3e;
+    --text-color: #fff;
+    --bg-color: #f5f5f5;
+    --border-color: #dcdcdc;
+    --hover-bg-color: rgba(0, 0, 0, 0.5);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --highlight-color: #de0606;
+    --secondary-text-color: grey;
+    --map-border-color: #ffffff;
+}
+
+
 body, html {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
-    display: flex;
     font-family: "Outfit", sans-serif;
   font-optical-sizing: auto;
 }
+.navbar{
+    height: 10vh;
+    width: 100%;
+    position: relative;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo{
+    width: 30%;
+    height: 10vh;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+.logo img{
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+}
+.filter{
+    margin: 0 20px;
+}
+.filter-button{
+    padding: 10px 12px;
+    /* color: var(--secondary-color); */
+    border: 2px solid black;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.3s;
+    font-family: "Outfit", sans-serif;
+    font-size: 18px;
+}
+button .fa-solid {
+    font-size: large;
+}
 #map {
-    height: 100vh;
+    height: 90vh;
     width: 70%;
     position: relative;
 }
@@ -23,25 +75,47 @@ body, html {
 #sidebar {
     top: 0;
     left: 0;
-    height: 100%;
+    height: 90%;
     width: 30%;
+    float: left;
     overflow-y: auto;
     box-sizing: border-box;
     padding: 10px;
-    background: #242f3e;
+    background: white;
     border-left: 1px solid #ccc;
     backdrop-filter: blur(10px);
     z-index: 100;
 }
 #search {
     position: relative;
-    width: 100%;
+    width: 250px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-radius: 51px;
+    /* box-shadow: 0 0 10px #6e6e6e; */
+    z-index: 100;osition: relative;
+    width: 250px;
     padding: 10px;
     box-sizing: border-box;
-    border-radius: 20px;
+    border-radius: 50px;
     /* box-shadow: 0 0 10px #6e6e6e; */
-    margin-top: 1%;
     z-index: 100;
+}
+.searchbar svg{
+    width: 27px;
+}
+.searchicon {
+    width: 40px;
+    height: 40px;
+    background-color: #191919;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 23%;
+    margin-left: 206px;
+    z-index: 100;
+    border-radius: 50%;
 }
 .custom-button , .navigation button {
     padding: 10px 12px;
@@ -58,7 +132,6 @@ body, html {
 }
 .custom-button:hover {
     background: #ffbc1c;
-    padding: 10px 15px;
     
 }
 .place {
@@ -125,8 +198,7 @@ body, html {
     width: 100%;
 }
 input[type=text]{
-    border: 7px #dcdcdc solid;
-    border-top: 8px solid #ffbc1c;
+    border: 2px black solid;
     font-family: "Outfit", sans-serif;
     font-size: large;
     outline: none;
@@ -210,7 +282,24 @@ input[type=range]:active::-webkit-slider-thumb{
     font-size: larger;
     width: 100px;
 }
+.status , .pricesection{
+    height: 20px;
+    display: flex;
+    align-items: center;
+    margin: 10px 20px;
+}
+.pricesection p {
+    font-size: x-large;
+    font-weight: 800;
+}
 
+.badge{
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    background-color: rgb(10, 128, 31);
+    margin-right: 4px;
+}
 .details-section{
     font-size: larger;
 }
@@ -287,7 +376,6 @@ input[type=range]:active::-webkit-slider-thumb{
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    max-width: 200px;
     max-height: 300px;
     overflow: hidden;
     display: flex;
@@ -299,6 +387,9 @@ input[type=range]:active::-webkit-slider-thumb{
 .info-details {
     width: 100%;
     text-align: left;
+}
+.info-details .window-price{
+    font-size: x-large;
 }
 
 .info-details p {
@@ -347,18 +438,9 @@ input[type=range]:active::-webkit-slider-thumb{
     text-align: left;
     margin-left: 20px;
 }
-#place-details {
-    margin: 30px 0px;
-    border: solid 5px #ffbc1c;
-    border-radius: 20px;
-    background-color: gainsboro;
-}
 
-#image-container {
-    position: relative;
-    width: 100%;
-    text-align: center;
-}
+
+
 
 
 #prev-image, #next-image {
@@ -478,19 +560,15 @@ button .fa-solid{
     background: #ffbc1c;
 }
 #place-details {
-    margin: 30px 0px;
-    border: solid 7px #ffbc1c;
+    margin: 30px 10px;
+    padding: 0 0 15px;
     border-radius: 20px;
-    border-left: solid 7px #ffffff;
-    border-right: solid 7px #ffffff;
-    background-color: gainsboro;
+    box-shadow: 0 0 10px #b3b3b3;
 }
 
 #image-container {
     position: relative;
-    width: 92%;
-    text-align: center;
-    margin: 4%;
+    width: 100%;
 }
 
 #image-container img {
@@ -499,9 +577,9 @@ button .fa-solid{
     /* max-height: 200px; */
     height: 260px;
     object-fit: cover;
-    border-radius: 15px 15px;
-    border-bottom: 7px solid #ffbc1c;
-    border: 7px solid #dcdcdc;
+    border-radius: 15px 15px 0 0;
+    /* border-bottom: 7px solid #ffbc1c; */
+
 }
 
 #prev-image, #next-image {
@@ -543,26 +621,40 @@ button .fa-solid{
     width: 30px;
     color: #ffbc1c;
 }
+
+.more-details-btn{
+    padding: 10px 12px;
+    /* color: var(--secondary-color); */
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.3s;
+    font-family: "Outfit", sans-serif;
+    font-size: 17px;
+    position: absolute;
+    margin: -52px 0px 0px 282px;
+}
 .place-details-info button{
     
 }
 .bottom-section{
     position: absolute;
-  bottom: 0;
-  right: 35%;
-  z-index: 100;
-  background-color: rgba(109, 109, 109, 0.349);
-  backdrop-filter: blur(10px);
-  width: 430px;
-  height: 71px;
-  border: 2px solid white;
+    bottom: 0;
+    right: 85%;
+    z-index: 100;
+    /* background-color: rgb(255 255 255); */
+    /* backdrop-filter: blur(10px); */
+    width: 30%;
+    height: 71px;
+    /* border: 2px solid white; */
     border-bottom: 0;
-  border-radius: 20px 20px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  transform: translateX(50%);
-  border-bottom: 0;
+    /* border-radius: 20px 20px 0 0; */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    transform: translateX(50%);
 }
 .bottom-section button , .navigation button{
     box-shadow: none;
@@ -587,13 +679,12 @@ button .fa-solid{
     position: absolute;
     width: 70%;
     right: 0;
-    top: 0;
+    top: 10%;
     height: 7vh;
     z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: center;
-}
+    justify-content: space-between;}
 .navigation button{
     margin: 0 20px;
     width: 130px;
@@ -608,27 +699,20 @@ button .fa-solid{
     width: 135px;
     margin: 30px;
 }
-.logo{width: 100%;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo img{
-    width: 40%;
-}
+
 #school-filters {
     position: absolute;
     bottom: 10px;
-    left: 40%;
+    left: 31%;
     z-index: 1000;
     width: 140px;
     height: 56px;
 }
 
 #school-toggle {
-    background: rgb(25, 25, 25);
+    background: rgb(0 0 0 / 70%);
     border: 2px solid #dcdcdc;
+    backdrop-filter: blur(5px);
     border-radius: 10px;
     padding: 10px 20px;
     cursor: pointer;
@@ -650,16 +734,17 @@ button .fa-solid{
 
 #nearby-filters {
     position: absolute;
-    bottom: 10px;
-    left: 31%;
+    bottom: 66px;
+        left: 31%;
     z-index: 1000;
     width: 140px;
     height: 56px;
 }
 
 #nearby-toggle {
-    background: rgb(20, 20, 20);
+    background: rgb(0 0 0 / 70%);
     border: 2px solid #dcdcdc;
+    backdrop-filter: blur(5px);
     border-radius: 10px;
     padding: 10px 20px;
     cursor: pointer;
@@ -672,11 +757,11 @@ button .fa-solid{
 .dropdown-content {
     display: none;
     position: absolute;
-    bottom: 40px;
-    left: 0;
-    width: 150px;
+    bottom: 50px;
+    left: 5px;
+    width: 170px;
     background-color: white;
-    border: 2px solid #dcdcdc;
+    border: 5px solid #191919;
     border-radius: 10px;
     padding: 10px;
     z-index: 1001;
@@ -684,10 +769,36 @@ button .fa-solid{
 }
 
 .dropdown-content div {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: large;
+    display: flex;
+    column-gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.dropdown-content div i{
+    width: 20px;
 }
 
 .close-btn {
     text-align: right;
     cursor: pointer;
+}
+.gm-style .gm-style-iw-c{
+     padding: 0 !important;
+     border-radius: 25px;
+     width: 260px;
+}
+
+.gm-style-iw-chr {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    overflow: visible;
+    background: none;
+    position: absolute;
+    z-index: 100;
+    left: 80%;
+    top: 0%;
 }

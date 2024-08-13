@@ -24,6 +24,27 @@
     <script src="fetchData.js"></script>
 </head>
 <body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="icons/logowhite.png" alt="Logo">
+        </div>
+        <div class="searchbar">
+            <input type="text" id="search" placeholder="Search for a place">
+            <div class="searchicon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" fill-rule="evenodd" d="M16.618 18.032a9 9 0 1 1 1.414-1.414l3.675 3.675a1 1 0 0 1-1.414 1.414l-3.675-3.675ZM18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" clip-rule="evenodd"/></svg>
+            </div>
+        </div>
+        <div class="filter">
+            <button class="filter-button">Price <i class="fa-solid fa-chevron-down"></i></button>
+            <button class="filter-button">Property Type</button>
+            <button class="filter-button">Rooms</button>
+            <button class="filter-button">Listing Status</button>
+            <button class="filter-button">More</button>
+            <button class="filter-button">Save Search</button>
+        </div>
+    </div>
+    
+    
     <div class="bottom-section">
         <button id="toggle-immos" class="custom-button active"><i class="fa-solid fa-location-dot"></i> Toggle Immos</button>
         <button id="display-signalisation" class="custom-button"><i class="fa-solid fa-triangle-exclamation"></i>Signalling Places</button>
@@ -34,12 +55,12 @@
     <div id="nearby-filters">
         <div id="nearby-toggle" class="custom-button"><i class="fa-solid fa-location-arrow"></i> Nearby</div>
         <div id="nearby-dropdown" class="dropdown-content">
+            <div class="close-btn" id="nearby-close"><i class="fa-solid fa-xmark"></i></div>
             <div><input type="checkbox" id="supermarket"><i class="fa-solid fa-shop"></i> <label for="supermarket">Supermarket</label></div>
             <div><input type="checkbox" id="hospital"><i class="fa-solid fa-hospital"></i> <label for="hospital">Hospital</label></div>
             <div><input type="checkbox" id="park"><i class="fa-solid fa-square-parking"></i> <label for="park">Park</label></div>
             <div><input type="checkbox" id="restaurant"><i class="fa-solid fa-utensils"></i> <label for="restaurant">Restaurant</label></div>
             <div><input type="checkbox" id="mosque"><i class="fa-solid fa-mosque"></i> <label for="mosque">Mosque</label></div>
-            <div class="close-btn" id="nearby-close"><i class="fa-solid fa-xmark"></i></div>
         </div>
     </div>
     
@@ -49,9 +70,7 @@
         <button class="sattelite"><i class="fa-solid fa-earth-americas"></i> Sattelite</button>
     </div>
     <div id="sidebar">
-        <div class="logo">
-            <img src="icons/logotrs.png" alt="" srcset="">
-        </div>
+
         <div id="place-details" style="display:none;">
             
             <div id="image-container">
@@ -59,38 +78,20 @@
                 <img id="place-image" src="" alt="Place Image">
                 <button id="next-image"><i class="fa-solid fa-arrow-right"></i></button>
             </div>
+            <div class="status">
+                <span class="badge"></span>
+                <p class="title">House for sale</p>
+            </div>
+            <div class="pricesection">
+                <p id="place-price"></p>
+            </div>
             <div class="place-details-info">
                 <p id="place-telephone"></p>
-                <p id="place-price"></p>
                 <p id="place-superficie"></p>
             
             </div>
+            <button class="more-details-btn">See more</button>
         </div>
-        <input type="text" id="search" placeholder="Search for a place">
-        <div class="range-section">
-            <h2>1 KM</h2>
-            <input type="range" id="radius" placeholder="Radius in meters" min="10" max="20000" step="10">
-            <h2>100 KM</h2>
-        </div>
-
-        <div id="filters"  style="display: none;">
-            <div class="filter-section">
-                <input placeholder="min price" type="number" id="min-price" name="min-price">
-                <input placeholder="max price" type="number" id="max-price" name="max-price">
-            </div>
-            <div class="filter-section">
-                <input placeholder="min superficie" type="number" id="min-superficie" name="min-superficie">
-                <input placeholder="max superficie" type="number" id="max-superficie" name="max-superficie">
-            </div>
-            <div class="filter-section">
-            <button id="reset-filters" class="custom-button">Reset Filters</button>
-            <button id="Confirm-btn" class="custom-button">Confirm</button>
-        </div>
-        </div>
-        <div id="toggle-filters" class="toggle-filters">
-            <button id="toggle-filters-btn" class="custom-button"><i class="fa-solid fa-circle-chevron-down"></i></button>
-        </div>
-        
         
             
     </div>

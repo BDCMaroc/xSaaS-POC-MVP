@@ -39,12 +39,12 @@ function fetchLocalData(bounds) {
                     infoWindowDiv.innerHTML = `
                         <button>NEW</button>
                         <div class="info-details">
-                            <p><strong>Price :</strong> ${place.Prix} DH</p>
+                            <p class="window-price"><strong>${place.Prix} DH</strong></p>
                             <p><strong>Superficie :</strong> ${place.Superficie} </p>
                         </div>
                     `;
                     infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
-                    infoWindowDiv.style.width = '200px';
+                    infoWindowDiv.style.width = '240px';
                     infoWindowDiv.style.height = '150px';
                     infoWindow.setContent(infoWindowDiv);
                     infoWindow.open(map, marker);

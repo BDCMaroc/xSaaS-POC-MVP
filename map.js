@@ -13,22 +13,17 @@ function initMap(defaultLocation) {
       streetViewControl: false,
       fullscreenControl: false,
       styles: [
-          { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-          { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-          { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-          { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#3D3D3D" }] },
+          { elementType: "labels.text.fill", stylers: [{visibility: "off" , color: "#6F6F6F" }] },
+          { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#A1A1A1" }] },
           { featureType: "poi", stylers: [{ visibility: "off" }] }, // Hide points of interest
           { featureType: "poi.park", stylers: [{ visibility: "off" }] }, // Hide parks
-          { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
-          { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
-          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
-          { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }] },
-          { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }] },
-          { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }] },
+          { featureType: "road", elementType: "geometry.stroke", stylers: [{  visibility: "off" , color: "#CFCFCF" }] },
+
+          { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#C2C2C2" }] },
+          { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ visibility : "off", color: "#3E3E3E" }] },
           { featureType: "transit", stylers: [{ visibility: "off" }] }, // Hide transit
-          { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
-          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
-          { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] }
+
       ]
   });
 

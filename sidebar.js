@@ -29,7 +29,7 @@ function updateSidebar(place) {
     
     showImage(currentImageIndex);
     placeTelephone.textContent = `Telephone: ${place.Telephone || 'N/A'}`;
-    placePrice.textContent = `Price: ${place.Prix} DH`;
+    placePrice.textContent = `${place.Prix} DH`;
     placeSuperficie.textContent = `Superficie: ${place.Superficie}`;
     
     sidebar.style.display = 'block';
