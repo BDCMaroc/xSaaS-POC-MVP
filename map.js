@@ -3,6 +3,9 @@ let autocomplete;
 let infoWindow;
 let drawingManager;
 let drawnShape = null;
+let visibleMarkers = new Map(); // Store currently visible markers
+let isFilterActive = false; // Track whether the filter is active
+
 
 function initMap(defaultLocation) {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -41,29 +44,69 @@ function initMap(defaultLocation) {
             map.setCenter(place.geometry.location);
             map.setZoom(17);
         }
-        fetchLocalData(map.getBounds());
+        updateMarkers();
     });
 
     infoWindow = new google.maps.InfoWindow();
 
-    google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
-        fetchLocalData(map.getBounds());
+    function throttleAndDebounce(func, wait, limit) {
+        let timeout;
+        let lastExecution = 0;
+    
+        return function(...args) {
+            const now = Date.now();
+    
+            if (now - lastExecution >= limit) {
+                lastExecution = now;
+                func.apply(this, args);
+            } else {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    lastExecution = Date.now();
+                    func.apply(this, args);
+                }, wait);
+            }
+        };
+    }
+    
+    // Usage in your map event listener
+    google.maps.event.addListener(map, 'bounds_changed', throttleAndDebounce(function() {
+        if (isFilterActive){
+            const bounds = map.getBounds();
+            const latMin = bounds.getSouthWest().lat();
+            const latMax = bounds.getNorthEast().lat();
+            const lngMin = bounds.getSouthWest().lng();
+            const lngMax = bounds.getNorthEast().lng();
+
+            const params = {
+                lat_min: latMin,
+                lat_max: latMax,
+                lng_min: lngMin,
+                lng_max: lngMax,
+                min_price: parseInt(document.getElementById('min-price').value),
+                max_price: parseInt(document.getElementById('max-price').value),
+                min_superficie: parseInt(document.getElementById('min-superficie').value),
+                max_superficie: parseInt(document.getElementById('max-superficie').value),
+                type_de_bien: document.getElementById('select-type').value
+            };
+
+            fetchLocalDataWithFilter(params);
         
-    }, 1));
-
-    infoWindow = new google.maps.InfoWindow();
-
-    google.maps.event.addListener(map, 'bounds_changed', debounce(function() {
+    } else {
         fetchLocalData(map.getBounds());
-    }, 500));
-
+    }
+    }, 500, 1000));
     google.maps.event.addListener(map, 'zoom_changed', function() {
         const zoom = map.getZoom();
-        immoMarkers.forEach(marker => {
-            marker.setIcon(zoom > 16 ? createRedCircleIcon() : createDefaultIcon(marker.price, marker.superficie));
+        const isZoomedIn = zoom >= 16;
+    
+        visibleMarkers.forEach((marker, uniqueKey) => {
+            const place = markerData[uniqueKey]; // Assuming you have a way to retrieve place data by uniqueKey
+            marker.setIcon(createMarkerIcon(place.Prix, place.Superficie, isZoomedIn));
         });
     });
-
+    
+    
 
     drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: null,
@@ -89,6 +132,8 @@ function initMap(defaultLocation) {
     });
 }
 
+
+
 function toggleSatellite() {
     const currentMapTypeId = map.getMapTypeId();
     if (currentMapTypeId === 'satellite') {
@@ -100,14 +145,4 @@ function toggleSatellite() {
     }
 }
 
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
+

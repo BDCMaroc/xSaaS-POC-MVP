@@ -11,6 +11,63 @@
     --map-border-color: #ffffff;
 }
 
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('fonts/Outfit/static/Outfit-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+
 
 body, html {
     height: 100%;
@@ -41,8 +98,22 @@ body, html {
     height: 100%;
     object-fit: cover;
 }
-.filter{
+.navbaritems{
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.filter {
     margin: 0 20px;
+    position: relative;
+    display: flex;
+    height: 100%;
+}
+.items-navbar , .price-item , .superficie-item , .type-item{
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 .filter-button{
     padding: 10px 12px;
@@ -55,6 +126,113 @@ body, html {
     transition: 0.3s;
     font-family: "Outfit", sans-serif;
     font-size: 18px;
+}
+#cancel-filter-btn{
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    left: 65%;
+}
+#cancel-filter-btn button{
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    font-family: "Outfit", sans-serif;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 160px;
+    animation: highlight 1.5s ease-out; 
+    transition: 0.5s;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: var(--primary-color);
+      opacity: 0%;
+      bottom : -100%;
+      margin-bottom: 60px;
+
+    }
+    100% {
+    background-color: #333;
+    opacity: 100%;
+    margin-bottom: 0px;
+    }
+
+  }
+.dropdown-price , .dropdown-superficie , .dropdown-type{
+    display: none;
+    position: absolute;
+    background-color: white;
+    /* min-width: 160px; */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    height: 240px;
+    left: -10%;
+    top: 100%;
+    border-radius: 20px;
+}
+.dropdown-superficie{
+    left: 5%;
+}
+
+.dropdown-type{
+    left: 43%;
+    width: 150px;
+}
+
+.input-price-section , .input-superficie-section , .input-type-section{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.input-price-section i , .input-superficie-section i , .input-type-section i{
+    margin: 10px;
+}
+
+.dropdown-price select , .dropdown-superficie select , .dropdown-type select{
+    width: 100px;
+    margin-right: 5px;
+    border-radius: 10px;
+    padding: 10px 5px;
+    font-family: 'Outfit';
+    font-weight: 600;
+    border: 2px solid black;
+}
+
+.price-item:hover + .dropdown-price, .dropdown-price:hover {
+    display: block;
+}
+.superficie-item:hover + .dropdown-superficie, .dropdown-superficie:hover {
+    display: block;
+}
+.type-item:hover + .dropdown-type, .dropdown-type:hover ,.dropdown-type select:hover{
+    display: block;
+}
+
+.dropdown-price select:hover , .dropdown-superficie select:hover , .dropdown-type select:hover{
+    cursor: pointer;
+}
+
+
+.close-dropdown {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 10px;
 }
 button .fa-solid {
     font-size: large;
@@ -101,6 +279,9 @@ button .fa-solid {
     /* box-shadow: 0 0 10px #6e6e6e; */
     z-index: 100;
 }
+.searchbar{
+    position: relative;
+}
 .searchbar svg{
     width: 27px;
 }
@@ -112,8 +293,9 @@ button .fa-solid {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 23%;
-    margin-left: 206px;
+    top: 0%;
+    right: 0;
+    margin: 3px;
     z-index: 100;
     border-radius: 50%;
 }
@@ -130,10 +312,7 @@ button .fa-solid {
     font-family: "Outfit", sans-serif;
     font-size: 18px;
 }
-.custom-button:hover {
-    background: #ffbc1c;
-    
-}
+
 .place {
     cursor: pointer;
     margin: 10px 0;
@@ -144,6 +323,10 @@ button .fa-solid {
 }
 .place:hover {
     background-color: #e0e0e0;
+}
+.status-details{
+    display: flex;
+  align-items: center;
 }
 .place-details-list{
     height: 230px;
@@ -165,6 +348,7 @@ button .fa-solid {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    
 }
 .place-details-list-info p{
     width: 320px;
@@ -179,9 +363,6 @@ button .fa-solid {
     transition:  0.3s;
     font-family: "Outfit", sans-serif;
     font-size: large;
-}
-.more-details-button:hover {
-    background: #ffbc1c;    
 }
 .popus{
     border: 5px solid #ffbc1c;
@@ -282,7 +463,18 @@ input[type=range]:active::-webkit-slider-thumb{
     font-size: larger;
     width: 100px;
 }
-.status , .pricesection{
+.status{
+    height: 20px;
+    margin: 10px 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    margin: 10px 20px;
+    justify-content: space-between;
+}
+.pricesection{
+    height: 20px;
+    margin: 10px 20px;
     height: 20px;
     display: flex;
     align-items: center;
@@ -299,6 +491,7 @@ input[type=range]:active::-webkit-slider-thumb{
     width: 12px;
     background-color: rgb(10, 128, 31);
     margin-right: 4px;
+    display: inline-block;
 }
 .details-section{
     font-size: larger;
@@ -470,10 +663,15 @@ input[type=range]:active::-webkit-slider-thumb{
 }
 
 .place-details-info{
-    font-size: large;
-    font-weight: 700;
-    margin-left: 20px;
-
+    margin: 0 20px;
+    display: flex;
+    justify-content: start;
+    font-size: 16px;
+    font-weight: 400;
+  gap: 15px;
+}
+.place-details-info p{
+    margin: 0;
 }
 button .fa-solid{
     font-size: x-large;
@@ -482,8 +680,15 @@ button .fa-solid{
     width: 30px;
     color: #ffbc1c;
 }
-.place-details-info button{
-    
+.plussection{
+    display: flex;
+  margin: 0 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plussection p  , .status .date{
+    font-weight: 200;
 }
 #filters {
     background-color: white;
@@ -556,9 +761,7 @@ button .fa-solid{
     border-radius: 0 0 10px 10px;
 }
 
-.custom-button:hover {
-    background: #ffbc1c;
-}
+
 #place-details {
     margin: 30px 10px;
     padding: 0 0 15px;
@@ -569,18 +772,39 @@ button .fa-solid{
 #image-container {
     position: relative;
     width: 100%;
+    height: 260px; /* Ensure the container has a height */
+    overflow: hidden;
 }
 
 #image-container img {
     width: 100%;
-    /* height: auto; */
-    /* max-height: 200px; */
-    height: 260px;
+    height: 100%;
     object-fit: cover;
     border-radius: 15px 15px 0 0;
-    /* border-bottom: 7px solid #ffbc1c; */
-
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
 }
+
+#image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--next-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    border-radius: 15px 15px 0 0;
+    z-index: 1;
+}
+
+#image-container.hover::before {
+    opacity: 1;
+}
+
 
 #prev-image, #next-image {
     position: absolute;
@@ -608,12 +832,7 @@ button .fa-solid{
     right: 0;
 }
 
-.place-details-info{
-    font-size: large;
-    font-weight: 700;
-    margin-left: 20px;
 
-}
 button .fa-solid{
     font-size: x-large;
 }
@@ -626,15 +845,13 @@ button .fa-solid{
     padding: 10px 12px;
     /* color: var(--secondary-color); */
     border: 1px solid black;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 50px;
     cursor: pointer;
-    margin: 5px;
     transition: 0.3s;
     font-family: "Outfit", sans-serif;
-    font-size: 17px;
-    position: absolute;
-    margin: -52px 0px 0px 282px;
+    font-size: 16px;
+
 }
 .place-details-info button{
     
@@ -677,28 +894,33 @@ button .fa-solid{
 }
 .navigation{
     position: absolute;
-    width: 70%;
+    /* width: 70%; */
     right: 0;
-    top: 10%;
-    height: 7vh;
+    top: 130px;
+    height: 9vh;
+    gap: 12px;
     z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: space-between;}
+    justify-content: flex-end;
+    flex-direction: column;
+}
 .navigation button{
     margin: 0 20px;
     width: 130px;
     font-family: "Outfit", sans-serif;
     height: 40px;
     transition: 0.5s;
-}
-.navigation button:hover{
-    background-color: #ffbc1c;
+    background: rgb(0 0 0 / 70%);
+    border: 2px solid #dcdcdc;
+    backdrop-filter: blur(5px);
     color: white;
-    border-color: #ffffff;
-    width: 135px;
-    margin: 30px;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 140px;
+    height: 56px;
 }
+
 
 #school-filters {
     position: absolute;
@@ -708,6 +930,23 @@ button .fa-solid{
     width: 140px;
     height: 56px;
 }
+
+#school-dropdown {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+}
+
+#school-dropdown .close-btn {
+    text-align: right;
+    cursor: pointer;
+}
+
 
 #school-toggle {
     background: rgb(0 0 0 / 70%);
@@ -730,13 +969,15 @@ button .fa-solid{
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-top: 10px;
+    border: 3px solid #191919;
+
 }
 
 #nearby-filters {
     position: absolute;
     bottom: 66px;
         left: 31%;
-    z-index: 1000;
+    z-index: 100;
     width: 140px;
     height: 56px;
 }
@@ -761,7 +1002,7 @@ button .fa-solid{
     left: 5px;
     width: 170px;
     background-color: white;
-    border: 5px solid #191919;
+    border: 3px solid #191919;
     border-radius: 10px;
     padding: 10px;
     z-index: 1001;
