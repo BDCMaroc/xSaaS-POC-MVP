@@ -13,6 +13,7 @@ $min_superficie = $_GET['min_superficie'] ?? 0;
 $max_superficie = $_GET['max_superficie'] ?? PHP_INT_MAX; // No upper limit if not set
 $type = $_GET['type'] ?? ''; // Empty string means no type filter
 
+
 // Construct the SQL query with the filters
 $sql = "SELECT * FROM immo_infos_with_gps WHERE Villee = '$city' 
         AND Prix >= $min_price 
