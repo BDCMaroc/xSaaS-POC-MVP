@@ -23,7 +23,11 @@ function fetchLocalData(bounds) {
             const zoom = map.getZoom();
             const isZoomedIn = zoom >= 16;
 
-            data.slice(0, 1000).forEach(place => {
+            // Clear the sidebar first
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = '';
+
+            data.slice(0, 200).forEach(place => {
                 const lat = parseFloat(place.Latitude);
                 const lng = parseFloat(place.Longitude);
                 const uniqueKey = `${lat},${lng}`;  // Use lat and lng as a unique key
@@ -37,6 +41,8 @@ function fetchLocalData(bounds) {
                             map: map,
                             icon: icon
                         });
+
+
 
                         marker.addListener('click', function () {
                             const infoWindowDiv = document.createElement('div');
@@ -54,7 +60,6 @@ function fetchLocalData(bounds) {
                             infoWindowDiv.style.height = '150px';
                             infoWindow.setContent(infoWindowDiv);
                             infoWindow.open(map, marker);
-                            updateSidebar(place);
                         });
 
                         visibleMarkers.set(uniqueKey, marker);
@@ -63,7 +68,10 @@ function fetchLocalData(bounds) {
                         console.log("Marker already exists:", uniqueKey);
                     }
                     newMarkers.set(uniqueKey, visibleMarkers.get(uniqueKey));
-                }
+
+                    // Update the sidebar with each place
+                    updateSidebarForMultiplePlaces(data);
+                                }
             });
 
             // Remove markers that are no longer in the visible area

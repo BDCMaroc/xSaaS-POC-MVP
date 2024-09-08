@@ -57,7 +57,7 @@ if ($type_de_bien !== null && $type_de_bien !== '') {
 }
 
 // Build the SQL query
-$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone, Type_de_bien , Transaction , Ville, Date , Étage, Terrasse, Balcon 
+$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone, Type_de_bien , Transaction , Ville, Date , Étage, Terrasse , id , Balcon 
         FROM immo_infos_with_gps 
         WHERE " . implode(' AND ', $conditions) . " 
         LIMIT 1000";

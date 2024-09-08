@@ -313,7 +313,7 @@ input {
     display: flex;
     gap: 2%;
     margin: 20px 0;
-    justify-content: space-between;
+    justify-content: flex-start;
 
 }
 .browse-cards-list{
@@ -323,7 +323,7 @@ input {
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start;
     /* gap: 33px; */
     row-gap: 30px;
 }
@@ -338,7 +338,7 @@ input {
     box-shadow: 0 0px 4px rgb(176, 176, 176);
     height: 350px;
     font-family: "Outfit", sans-serif;
-    width: 23%;
+    width: 330px;
     border-radius: 20px;
     background: white;
 }

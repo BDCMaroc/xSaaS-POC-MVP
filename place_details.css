@@ -204,3 +204,31 @@
 }
 
 
+#loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.cardssection {
+    width: 100%; /* Default width when the map is not visible */
+    transition: width 0.3s ease;
+}
+
+#map {
+    width: 0;
+    height: 100vh; /* Ensure the map takes full height of the viewport */
+    transition: width 0.3s ease;
+    display: none; /* Initially hidden */
+}
+
+#map.show {
+    width: 50%;
+}
+

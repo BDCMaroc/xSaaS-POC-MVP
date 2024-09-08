@@ -83,6 +83,116 @@ showImage(currentImageIndex);
     
     sidebar.style.display = 'block';
 }
+function updateSidebarForMultiplePlaces(places) {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.innerHTML = ''; // Clear the sidebar before adding new places
+    const placesToDisplay = places.slice(0, 10);
+    placesToDisplay.forEach(place => {
+        console.log(place); 
+        const placeDetails = document.createElement('div');
+        placeDetails.className = 'place-details';
+
+        placeDetails.addEventListener('click', function() {
+            window.location.href = `place_details.php?id=${place.id}`;
+        });
+
+        const imageContainer = document.createElement('div');
+        imageContainer.id = 'image-container';
+
+        const placeImage = document.createElement('img');
+        placeImage.id = 'place-image';
+        placeImage.src = place.Images_url ? place.Images_url.split(',')[0].trim() : 'default.jpg';
+        imageContainer.appendChild(placeImage);
+
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status';
+
+        const statusDetails = document.createElement('div');
+        statusDetails.className = 'status-details';
+
+        const placeBadge = document.createElement('span');
+        placeBadge.className = 'badge';
+        if (place.Transaction === 'Vente') {
+            placeBadge.style.backgroundColor = 'rgb(10, 128, 31)'; // Green color for sale
+        } else if (place.Transaction === 'Location') {
+            placeBadge.style.backgroundColor = '#ffbc1c'; // Yellow color for rent
+        }
+        statusDetails.appendChild(placeBadge);
+
+        const placeTitle = document.createElement('p');
+        placeTitle.className = 'title';
+        placeTitle.textContent = `${place.Type_de_bien || 'Property'} ${place.Transaction === 'Vente' ? 'for sale' : 'for rent'}`;
+        statusDetails.appendChild(placeTitle);
+
+        statusDiv.appendChild(statusDetails);
+
+        const placeDate = document.createElement('p');
+        placeDate.id = 'place-date';
+        placeDate.textContent = `${place.Date.slice(0, 10) || 'N/A'}`;
+        statusDiv.appendChild(placeDate);
+
+        const priceSection = document.createElement('div');
+        priceSection.className = 'pricesection';
+
+        const placePrice = document.createElement('p');
+        placePrice.id = 'place-price';
+        placePrice.textContent = `${formatPrice(place.Prix)}`;
+        priceSection.appendChild(placePrice);
+
+        const placeDetailsInfo = document.createElement('div');
+        placeDetailsInfo.className = 'place-details-info';
+
+        const placeSuperficie = document.createElement('p');
+        placeSuperficie.id = 'place-superficie';
+        placeSuperficie.textContent = `${place.Superficie} Sup`;
+        placeDetailsInfo.appendChild(placeSuperficie);
+
+        const placeEtage = document.createElement('p');
+        placeEtage.id = 'place-etage';
+        let replacement;
+        if (place.Étage) {
+            replacement = place.Étage + ' Etage';
+        } else if (place.Nb_de_façades) {
+            replacement = place.Nb_de_façades + ' Nb façades';
+        } else {
+            replacement = place.Parking + ' Parking';
+        }
+        placeEtage.textContent = `${replacement}`;
+        placeDetailsInfo.appendChild(placeEtage);
+
+        const placeTerrasse = document.createElement('p');
+        placeTerrasse.id = 'place-terrasse';
+        placeTerrasse.textContent = `${place.Terrasse ? '1' : '0'} Terasse`;
+        placeDetailsInfo.appendChild(placeTerrasse);
+
+        const placeBalcon = document.createElement('p');
+        placeBalcon.id = 'place-balcon';
+        placeBalcon.textContent = `${place.Balcon} Balcon`;
+        placeDetailsInfo.appendChild(placeBalcon);
+
+        const placeVille = document.createElement('p');
+        placeVille.id = 'place-ville';
+        placeVille.textContent = `${place.Ville || 'N/A'}`;
+
+        const plusSection = document.createElement('div');
+        plusSection.className = 'plussection';
+        plusSection.appendChild(placeVille);
+
+
+
+        // Append everything to placeDetails
+        placeDetails.appendChild(imageContainer);
+        placeDetails.appendChild(statusDiv);
+        placeDetails.appendChild(priceSection);
+        placeDetails.appendChild(placeDetailsInfo);
+        placeDetails.appendChild(plusSection);
+
+        // Add the placeDetails to the sidebar
+        sidebar.appendChild(placeDetails);
+    });
+
+    sidebar.style.display = 'block';
+}
 
 function updateSidebarforfutureplaces(place) {
     const sidebar = document.getElementById('place-details');

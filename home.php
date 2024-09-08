@@ -32,7 +32,7 @@
                     Casablanca
                 </a>
             </div>
-            <a href="maps.html" class="p2" style="text-decoration: none;">
+            <a href="maps.php" class="p2" style="text-decoration: none;">
                 <button class="btn">
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" id="Layer_1"
                         class="sparkle" viewBox="0 0 576 512">

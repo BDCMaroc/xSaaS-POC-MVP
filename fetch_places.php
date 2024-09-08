@@ -5,6 +5,7 @@ $city = $_GET['city'] ?? 'Casablanca'; // Default to Casablanca if no city is se
 
 $sql = "SELECT * FROM immo_infos_with_gps WHERE Villee = '$city' LIMIT 4";
 $result = $conn->query($sql);
+include("formatprice.php");
 
 if ($result->num_rows > 0):
     while($place = $result->fetch_assoc()): ?>
@@ -25,7 +26,7 @@ if ($result->num_rows > 0):
         </div>
     </div>
     <div class="pricesection">
-        <p id="place-price"><?php echo $place['Prix']; ?> DH</p>
+    <p id="place-price"><?php echo formatPrice($place['Prix']); ?></p>
     </div>
     <div class="place-details-info">
         <p id="place-superficie"><?php echo $place['Superficie']; ?> Sup</p>

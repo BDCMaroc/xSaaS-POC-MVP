@@ -14,7 +14,7 @@ if ($lat_min === false || $lat_max === false || $lng_min === false || $lng_max =
 }
 
 // Define the SQL query to select the needed fields from the database
-$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone , Type_de_bien , Transaction , Ville, Date , Étage, Terrasse, Balcon , Parking , Nb_de_façades
+$sql = "SELECT Latitude, Longitude, Prix, Url, Superficie, Images_url, Telephone , Type_de_bien , Transaction , Ville, Date , Étage, Terrasse, Balcon , Parking , id , Nb_de_façades
         FROM immo_infos_with_gps 
         WHERE Latitude BETWEEN ? AND ? AND Longitude BETWEEN ? AND ? 
         LIMIT 1000"; // Limit the results to avoid overwhelming the client

@@ -1,4 +1,58 @@
 let useFilter = false; // Flag to determine whether to use filtered data or not
+$(document).ready(function() {
+    // Step 1: Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const city = urlParams.get('city') || 'Casablanca';
+    const minPrice = urlParams.get('min_price') || 0;
+    const maxPrice = urlParams.get('max_price') || PHP_INT_MAX;
+    const minSuperficie = urlParams.get('min_superficie') || 0;
+    const maxSuperficie = urlParams.get('max_superficie') || PHP_INT_MAX;
+    const typeDeBien = urlParams.get('type') || '';
+
+    // Step 2: Set the values of filter fields
+    $('#min-price').val(minPrice);
+    $('#max-price').val(maxPrice);
+    $('#min-superficie').val(minSuperficie);
+    $('#max-superficie').val(maxSuperficie);
+    $('#select-type').val(typeDeBien);
+
+    console.log('Selected Filters:', {minPrice, maxPrice, minSuperficie, maxSuperficie, typeDeBien});
+
+    // Step 3: Update the filter buttons to reflect the selected values
+    updatePriceButton();
+    updateSuperficieButton();
+    updateTypeButton();
+
+    // Step 4: Automatically execute the filter as if the user clicked "Save Search"
+    if (city || minPrice > 0 || maxPrice < PHP_INT_MAX || minSuperficie > 0 || maxSuperficie < PHP_INT_MAX || typeDeBien) {
+        useFilter = true;
+        isFilterActive = true;
+
+        $('#cancel-filter-btn').css('display', 'block');
+
+    // Get the map bounds
+    const bounds = map.getBounds();
+    const latMin = bounds.getSouthWest().lat();
+    const latMax = bounds.getNorthEast().lat();
+    const lngMin = bounds.getSouthWest().lng();
+    const lngMax = bounds.getNorthEast().lng();
+
+        const params = {
+            lat_min: latMin,
+            lat_max: latMax,
+            lng_min: lngMin,
+            lng_max: lngMax,
+            min_price: parseInt(minPrice),
+            max_price: parseInt(maxPrice),
+            min_superficie: parseInt(minSuperficie),
+            max_superficie: parseInt(maxSuperficie),
+            type_de_bien: typeDeBien
+        };
+
+        // Call the function to fetch filtered data
+        fetchLocalDataWithFilter(params);
+    }
+});
 
 $('#min-price, #max-price').on('change', updatePriceButton);
 $('#min-superficie, #max-superficie').on('change', updateSuperficieButton);
@@ -128,6 +182,9 @@ function fetchLocalDataWithFilter(params) {
                 
                 // Add the marker to the new set of markers
                 newMarkers.set(uniqueKey, visibleMarkers.get(uniqueKey));
+
+                                    // Update the sidebar with each place
+                                    updateSidebarForMultiplePlaces(data);
             });
 
             // Remove any markers that are no longer in the new set of markers
@@ -173,3 +230,5 @@ $('#cancel-filter-btn').on('click', function() {
     // Fetch the default data to reset the map
     fetchLocalData(map.getBounds());
 });
+
+
