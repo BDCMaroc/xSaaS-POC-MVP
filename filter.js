@@ -3,6 +3,7 @@ $(document).ready(function() {
     // Step 1: Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const city = urlParams.get('city') || 'Casablanca';
+    
     const minPrice = urlParams.get('min_price') || 0;
     const maxPrice = urlParams.get('max_price') || PHP_INT_MAX;
     const minSuperficie = urlParams.get('min_superficie') || 0;
@@ -141,7 +142,7 @@ function fetchLocalDataWithFilter(params) {
             const zoom = map.getZoom();
             const isZoomedIn = zoom >= 16;
 
-            data.forEach(place => {
+            data.slice(0, 100).forEach(place => {
                 const position = new google.maps.LatLng(parseFloat(place.Latitude), parseFloat(place.Longitude));
                 const uniqueKey = `${place.Latitude},${place.Longitude}`;
 
@@ -160,11 +161,13 @@ function fetchLocalDataWithFilter(params) {
                         infoWindowDiv.className = 'info-window';
                         const imageUrl = place.Images_url.split(',')[0].trim();
                         infoWindowDiv.innerHTML = `
-                            <button>NEW</button>
-                            <div class="info-details">
-                                <p class="window-price"><strong>${place.Prix} DH</strong></p>
-                                <p><strong>Superficie :</strong> ${place.Superficie} </p>
-                            </div>
+                        <a href="place_details.php?id=${place.id}" class="place-link" style="text-decoration: none;color: inherit;width: 100%;height: 100%;display: flex;align-items: flex-end;justify-content: flex-start;">
+                        <button>NEW</button>
+                        <div class="info-details">
+                        <p class="window-price"><strong>${place.Prix} DH</strong></p>
+                        <p><strong>Superficie :</strong> ${place.Superficie} </p>
+                        </div>
+                        </a>
                         `;
                         infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
                         infoWindowDiv.style.width = '240px';

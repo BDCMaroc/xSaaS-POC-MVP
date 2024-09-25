@@ -40,13 +40,11 @@ include("formatprice.php");
 
 ?>
 
-<div class="title-section">
-    <h2 class="title-city">
-        <?php echo htmlspecialchars($city); ?> real estate & homes for sale
-    </h2>
-</div>
 
 <section class="browse-section-list">
+<h2 class="title-city">
+        <?php echo htmlspecialchars($city); ?> real estate & homes for sale
+    </h2>
     <div class="browse-cards-list" id="data">
         <?php if ($result->num_rows > 0): ?>
             <?php while($place = $result->fetch_assoc()): ?>
@@ -73,7 +71,7 @@ include("formatprice.php");
                         <p id="place-balcon"><strong><?php echo $place['Balcon'] ?: '0'; ?></strong> Balcon</p>
                     </div>
                     <div class="plussection">
-                        <p id="place-ville"><?php echo substr($place['Ville'], 12) ?: 'N/A'; ?></p>
+                        <p id="place-ville"><?php echo $place['Ville'] ?: 'N/A'; ?></p>
                     </div>
                     </a>
 

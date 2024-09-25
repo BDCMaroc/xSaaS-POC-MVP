@@ -126,7 +126,7 @@ input {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    /* padding: 0 20px; */
     background-color: #fff;
     height: 100%;
     width: 86%;
@@ -179,23 +179,27 @@ input {
 
 
 .navbar{
-    height: 7vh;
+    height: 50px;
     width: 100%;
     position: relative;
     float: left;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     border-bottom: 1px rgb(189, 189, 189) solid;
 }
+.navbarcontent{
+   
+    display: flex;
+    width: 98%;
+    margin: auto;
+}
 .logo{
-    height: 3vh;
     display: flex;
     align-items: start;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .logo img{
-    height: 100%;
+    height: 22px;
     object-fit: cover;
 }
 
@@ -297,10 +301,9 @@ input {
 }
 
 .browse-section-list{
-    max-width: 1650px;
     margin: auto;
     width: 97%;
-    margin-top: -27%;
+
 }
 .browse-section{
     max-width: 1650px;
@@ -318,12 +321,11 @@ input {
 }
 .browse-cards-list{
     display: flex;
-    gap: 2%;
     margin: 20px 0;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-between;
     /* gap: 33px; */
     row-gap: 30px;
 }
@@ -336,9 +338,9 @@ input {
 }
 .place-card{
     box-shadow: 0 0px 4px rgb(176, 176, 176);
-    height: 350px;
+    height: 420px;
     font-family: "Outfit", sans-serif;
-    width: 330px;
+    width: 24%;
     border-radius: 20px;
     background: white;
 }
@@ -350,7 +352,7 @@ input {
 #image-container {
     position: relative;
     width: 100%;
-    height: 200px; /* Ensure the container has a height */
+    height: 280px; /* Ensure the container has a height */
     overflow: hidden;
 }
 
@@ -453,6 +455,7 @@ input {
 }
 .plussection p  , .status .date{
     font-weight: 200;
+    margin: 5px 0;
 }
 .more-details-btn{
     padding: 5px 12px;
@@ -471,17 +474,19 @@ input {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    height: 10vh;
-    margin: 0 1%;
+    height: 60px;
+    margin: auto;
+    
 }
 #navsearch {
     z-index: 100;
     position: relative;
     width: 270px;
-    height: 50px;
+    height: 45px;
     padding: 10px 10px 10px 20px;
     box-sizing: border-box;
-    font-size: medium;
+    font-size: 16px;
+    font-weight: 500;
     border-radius: 50px;
     border: 1px solid;
 }
@@ -492,8 +497,8 @@ input {
     width: 27px;
 }
 .navsearchbar  .searchicon {
-    width: 42px;
-    height: 42px;
+    width: 37px;
+    height: 37px;
     background-color: #191919;
     display: flex;
     align-items: center;
@@ -509,7 +514,7 @@ input {
     position: relative;
     display: flex;
     height: 100%;
-    width: 84%;
+    width: 100%;
     justify-content: space-between
 }
 .filter-p1{
@@ -534,7 +539,7 @@ input {
 }
 
 .filter-p2 .list ,.filter-p2 .map{
-    padding: 10px 20px;
+    padding: 5px;
     border-radius: 50px;
     border: 0;
     font-size: larger;
@@ -551,6 +556,7 @@ input {
     height: 100%;
     display: flex;
     align-items: center;
+    position: relative;
 }
 .filter-button{
     padding: 10px 12px;
@@ -562,7 +568,12 @@ input {
     margin: 5px;
     transition: 0.3s;
     font-family: "Outfit", sans-serif;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 10px;
 }
 #save-search-btn{
     border-radius: 25px !important;
@@ -573,21 +584,18 @@ input {
     position: absolute;
     background-color: white;
     /* min-width: 160px; */
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     padding: 12px 16px;
-    border: 1px solid #ddd;
-    height: 240px;
-    left: -10%;
-    top: 100%;
+    border: 1px solid black;
+    height: 46px;
+    left: 0;
     border-radius: 20px;
+    transition: 0.5s;
 }
 .dropdown-superficie{
-    left: 5%;
 }
 
 .dropdown-type{
-    left: 43%;
     width: 150px;
 }
 
@@ -607,20 +615,49 @@ input {
     border-radius: 10px;
     padding: 10px 5px;
     font-family: 'Outfit';
-    font-weight: 600;
-    border: 2px solid black;
+    font-weight: 500;
+    font-size: 16px;
+    border: 1px solid black;
 }
 
-.price-item:hover + .dropdown-price, .dropdown-price:hover {
+.price-item:hover .dropdown-price {
     display: block;
 }
-.superficie-item:hover + .dropdown-superficie, .dropdown-superficie:hover {
+.dropdown-price:hover {
+    display: block;
+    height: 240px;
+    opacity: 100%;
+}
+.superficie-item:hover .dropdown-superficie {
     display: block;
 }
-.type-item:hover + .dropdown-type, .dropdown-type:hover ,.dropdown-type select:hover{
+.dropdown-superficie:hover {
     display: block;
+    height: 240px;
+}
+.type-item:hover .dropdown-type {
+    display: block;
+}
+.dropdown-type:hover ,.dropdown-type select:hover{
+    display: block;
+    
 }
 
 .dropdown-price select:hover , .dropdown-superficie select:hover , .dropdown-type select:hover{
     cursor: pointer;
 }
+
+@media screen and (max-width: 1350px) {
+        .place-card{
+            width: 32%;
+            height: 365px;
+        }
+        #image-container{
+            height: 220px;
+        }
+
+  }
+  
+  @media screen and (min-width: 800px) {
+
+  }

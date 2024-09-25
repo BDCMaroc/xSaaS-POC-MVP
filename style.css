@@ -67,6 +67,14 @@
     font-style: normal;
 }
 
+svg {
+    font-family: "Outfit", sans-serif;
+}
+svg text {
+    font-family: "Outfit", sans-serif;
+    fill: #333; /* Optional: Set text color */
+    font-size: 16px; /* Optional: Set text size */
+}
 
 
 body, html {
@@ -75,7 +83,7 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: "Outfit", sans-serif;
-  font-optical-sizing: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .navbaritems{
@@ -85,7 +93,6 @@ body, html {
     justify-content: space-between;
 }
 .filter {
-    margin: 0 20px;
     position: relative;
     display: flex;
     height: 100%;
@@ -218,8 +225,8 @@ button .fa-solid {
     font-size: large;
 }
 #map {
-    height: 82.94vh;
-    width: 50%;
+    height: calc(100vh - 110px);
+    width: auto;
     position: relative;
 }
 .navbarmaps{
@@ -233,8 +240,8 @@ button .fa-solid {
 #sidebar {
     top: 0;
     left: 0;
-    height: 82%;
-    width: 50%;
+    height: calc(100vh - 110px);
+    width: 850px;
     float: left;
     overflow-y: auto;
     box-sizing: border-box;
@@ -424,6 +431,30 @@ input[type=range]:active::-webkit-slider-thumb{
     float: left;
     margin: 10px;
 
+}
+.place-details-for-map{
+    width: 385px;
+    height: 420px;
+    font-family: "Outfit", sans-serif;
+    box-shadow: 0 0 10px #ddcaca;
+    border-radius: 20px;
+    overflow: hidden;
+    float: left;
+    margin: 1%;
+}
+.image-container-for-map {
+    position: relative;
+    width: 100%;
+    height: 65%;
+    overflow: hidden;
+}
+.image-container-for-map img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
 }
 .place-details img{
     width: 50%;
@@ -885,10 +916,9 @@ button .fa-solid{
 }
 .navigation{
     position: absolute;
-    /* width: 70%; */
-    right: 0;
-    top: 180px;
-    height: 9vh;
+    right: 10px;
+    top: 127px;
+    height: 47px;
     gap: 12px;
     z-index: 100;
     display: flex;
@@ -912,11 +942,12 @@ button .fa-solid{
     height: 56px;
 }
 
+#toggle-drawing{display: none;}
 
 #school-filters {
     position: absolute;
     bottom: 10px;
-    left: 51%;
+    left: 860px;
     z-index: 1000;
     width: 140px;
     height: 56px;
@@ -967,7 +998,7 @@ button .fa-solid{
 #nearby-filters {
     position: absolute;
     bottom: 66px;
-        left: 51%;
+        left: 860px;
     z-index: 100;
     width: 140px;
     height: 56px;
@@ -1033,4 +1064,20 @@ button .fa-solid{
     z-index: 100;
     left: 80%;
     top: 0%;
+}
+
+@media screen and (min-width: 2000px) {
+    #sidebar{
+        width: 1200px;
+
+    }
+    .place-details-for-map {
+        width: 362px;
+    }
+    #school-filters{
+        left: 1215px;
+    }
+    #nearby-filters{
+        left: 1215px;
+    }
 }

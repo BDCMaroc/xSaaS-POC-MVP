@@ -37,10 +37,10 @@ function createMarkerIcon(price, superficie, isZoomedIn) {
                 </filter>
             </defs>
             <path d="M 20 29 Q 20 10 40 9 L 60 9 Q 80 10 80 29 L 80 34 L 20 34 Z" style="fill: #333333; filter: url(#shadow);" />
-            <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle" font-weight="bold">${superficie} M</text>
+            <text x="50" y="25" font-family="sans-serif" font-size="15" fill="white" text-anchor="middle" font-weight="bold">${superficie} M</text>
             
             <rect x="01" y="30" width="98" height="30" rx="15" ry="15" style="fill:#ffffff;stroke:none;stroke-width:0; filter: url(#shadow);" />
-            <text x="50" y="50" font-family="Arial" font-size="16" fill="black" text-anchor="middle" font-weight="bold">${formattedPrice}</text>
+            <text x="50" y="50" font-family="sans-serif" font-size="16" fill="black" text-anchor="middle" font-weight="bold">${formattedPrice}</text>
             
             <path d="M 45 60 L 55 60 L 50 70 Z" style="fill:#ffbc1c; filter: url(#shadow);" />
         </svg>`;

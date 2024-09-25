@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FEENWAY</title>
-    <link rel="icon" href="icons/smallogo.png">
+    <meta name="viewport" content="width=820, initial-scale=1, maximum-scale=1, user-scalable=no">    <link rel="icon" href="icons/smallogo.png">
     <link rel="stylesheet" href="style.css">
 
     <link href="fontawesome/css/fontawesome.css" rel="stylesheet">
@@ -12,7 +10,7 @@
     <link href="fontawesome/css/solid.css" rel="stylesheet">
     <link rel="stylesheet" href="home.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MW5OeNFgHZ1Zqd2unW3UNsA6IDLYaFQ&libraries=places,drawing,geometry"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPIL18d_RGjiuKB1983mILcRKPn9z7kKY&libraries=places,drawing,geometry"></script>
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     <script src="formatprice.js"></script>
     <script src="sidebar.js"></script>

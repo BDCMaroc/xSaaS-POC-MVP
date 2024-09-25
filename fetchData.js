@@ -27,7 +27,7 @@ function fetchLocalData(bounds) {
             const sidebar = document.getElementById('sidebar');
             sidebar.innerHTML = '';
 
-            data.slice(0, 200).forEach(place => {
+            data.slice(0, 100).forEach(place => {
                 const lat = parseFloat(place.Latitude);
                 const lng = parseFloat(place.Longitude);
                 const uniqueKey = `${lat},${lng}`;  // Use lat and lng as a unique key
@@ -49,11 +49,14 @@ function fetchLocalData(bounds) {
                             infoWindowDiv.className = 'info-window';
                             const imageUrl = place.Images_url.split(',')[0].trim();
                             infoWindowDiv.innerHTML = `
+                                                             <a href="place_details.php?id=${place.id}" class="place-link" style="text-decoration: none;color: inherit;width: 100%;height: 100%;display: flex;align-items: flex-end;justify-content: flex-start;">
+
                                 <button>NEW</button>
                                 <div class="info-details">
                                     <p class="window-price"><strong>${place.Prix} DH</strong></p>
                                     <p><strong>Superficie :</strong> ${place.Superficie} </p>
                                 </div>
+                                 </a>
                             `;
                             infoWindowDiv.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0, 0, 0, 0.5)), url(${imageUrl})`;
                             infoWindowDiv.style.width = '240px';

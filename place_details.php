@@ -40,8 +40,8 @@ function calculateDateDifference($date) {
             <div class="main-image">
                 <img id="main-image" src="<?php echo $place['Images_url'] ? explode(',', $place['Images_url'])[0] : 'default.jpg'; ?>" alt="Main Property Image">
                 <div class="image-nav">
-                    <button id="prev-image" class="nav-btn">&#10094;</button>
-                    <button id="next-image" class="nav-btn">&#10095;</button>
+                    <button id="prev-image" class="nav-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button id="next-image" class="nav-btn"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
             <div class="thumbnails">
@@ -51,6 +51,10 @@ function calculateDateDifference($date) {
                     echo "<img class='thumbnail' src='$image' data-index='$index' alt='Thumbnail'>";
                 }
                 ?>
+            </div>
+            <div class="description-place">
+                <h3>Description</h3>
+                <p><?php echo $place['Description'] ?: 'No description about this page'; ?></p>
             </div>
         </div>
 

@@ -71,29 +71,20 @@ $(document).ready(function() {
         const minPricefortext = $('#min-price option:selected').text();
         const maxPricefortext = $('#max-price option:selected').text();
         const priceText = `${minPricefortext} - ${maxPricefortext}`;
-        $('#price-filter-btn').html(priceText).css({
-            'background': 'black',
-            'color': 'white'
-        });
+        $('#price-filter-btn').html(priceText);
     }
 
     function updateSuperficieButton() {
         const minSuperficiefortext = $('#min-superficie option:selected').text();
         const maxSuperficiefortext = $('#max-superficie option:selected').text();
         const superficieText = `${minSuperficiefortext} - ${maxSuperficiefortext}`;
-        $('#superficie-filter-btn').html(superficieText).css({
-            'background': 'black',
-            'color': 'white'
-        });
+        $('#superficie-filter-btn').html(superficieText);
     }
 
     function updateTypeButton() {
         const typefortext = $('#select-type option:selected').text();
         const typeText = `Type: ${typefortext}`;
-        $('#type-filter-btn').html(typeText).css({
-            'background': 'black',
-            'color': 'white'
-        });
+        $('#type-filter-btn').html(typeText);
     }
 
     $('#navsearch').on('input', function() {

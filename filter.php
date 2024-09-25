@@ -14,8 +14,7 @@
         <div class="filter-p1">
         <div class="price-item">
             <button class="filter-button" id="price-filter-btn">Price <i class="fa-solid fa-chevron-down"></i></button>
-        </div>
-        <div id="price-dropdown" class="dropdown-price">
+            <div id="price-dropdown" style="top : 60px" class="dropdown-price">
             <div class="input-price-section">
                 <select id="min-price">
                     <option value="0">No min</option>
@@ -40,11 +39,12 @@
                 </select>
             </div>
         </div>
+        </div>
+        
         <div class="superficie-item">
             <button class="filter-button" id="superficie-filter-btn">superficie<i
                     class="fa-solid fa-chevron-down"></i></button>
-        </div>
-        <div id="superficie-dropdown" class="dropdown-superficie">
+                    <div id="superficie-dropdown" style="top : 60px" class="dropdown-superficie">
             <div class="input-superficie-section">
                 <select id="min-superficie">
                     <option value="0">No min</option>
@@ -69,10 +69,11 @@
                 </select>
             </div>
         </div>
+        </div>
+        
         <div class="type-item">
             <button class="filter-button" id="type-filter-btn">Type<i class="fa-solid fa-chevron-down"></i></button>
-        </div>
-        <div id="type-dropdown" class="dropdown-type">
+            <div id="type-dropdown" style="top : 60px" class="dropdown-type">
             <div class="input-type-section">
                 <select style="width: 100%;" id="select-type">
                     <option value="">ALL</option>
@@ -99,6 +100,8 @@
                 </select>
             </div>
         </div>
+        </div>
+        
         <div class="items-navbar">
             <button class="filter-button" id="save-search-btn">Save Search</button>
         </div>
@@ -115,4 +118,71 @@
     </div>
 
 </div>
+<script>
+    document.getElementById('min-price').addEventListener('change', function() {
+    let minPrice = parseInt(this.value);
+    let maxPrice = parseInt(document.getElementById('max-price').value);
+
+    // Check if the min price is greater than or equal to the max price
+    if (minPrice >= maxPrice && maxPrice !== 0) {
+        // Update the max price to a value higher than min price
+        let newMaxOption = Array.from(this.options).find(option => parseInt(option.value) > minPrice);
+        if (newMaxOption) {
+            document.getElementById('max-price').value = newMaxOption.value;
+        } else {
+            document.getElementById('max-price').value = 0; // Set to 'No min' if no valid option is found
+        }
+    }
+});
+
+document.getElementById('max-price').addEventListener('change', function() {
+    let maxPrice = parseInt(this.value);
+    let minPrice = parseInt(document.getElementById('min-price').value);
+
+    // Check if the max price is less than or equal to the min price
+    if (maxPrice <= minPrice && maxPrice !== 0) {
+        // Update the min price to a value lower than max price
+        let newMinOption = Array.from(this.options).find(option => parseInt(option.value) < maxPrice);
+        if (newMinOption) {
+            document.getElementById('min-price').value = newMinOption.value;
+        } else {
+            document.getElementById('min-price').value = 0; // Set to 'No min' if no valid option is found
+        }
+    }
+});
+
+document.getElementById('min-superficie').addEventListener('change', function() {
+    let minSuperficie = parseInt(this.value);
+    let maxSuperficie = parseInt(document.getElementById('max-superficie').value);
+
+    // Check if the min superficie is greater than or equal to the max superficie
+    if (minSuperficie >= maxSuperficie && maxSuperficie !== 0) {
+        // Update the max superficie to a value higher than min superficie
+        let newMaxOption = Array.from(this.options).find(option => parseInt(option.value) > minSuperficie);
+        if (newMaxOption) {
+            document.getElementById('max-superficie').value = newMaxOption.value;
+        } else {
+            document.getElementById('max-superficie').value = 0; // Set to 'No min' if no valid option is found
+        }
+    }
+});
+
+document.getElementById('max-superficie').addEventListener('change', function() {
+    let maxSuperficie = parseInt(this.value);
+    let minSuperficie = parseInt(document.getElementById('min-superficie').value);
+
+    // Check if the max superficie is less than or equal to the min superficie
+    if (maxSuperficie <= minSuperficie && maxSuperficie !== 0) {
+        // Update the min superficie to a value lower than max superficie
+        let newMinOption = Array.from(this.options).find(option => parseInt(option.value) < maxSuperficie);
+        if (newMinOption) {
+            document.getElementById('min-superficie').value = newMinOption.value;
+        } else {
+            document.getElementById('min-superficie').value = 0; // Set to 'No min' if no valid option is found
+        }
+    }
+});
+
+
+</script>
 

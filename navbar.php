@@ -1,4 +1,5 @@
 <div class="navbar" style="float: none;">
+    <div class="navbarcontent">
     <a href="home.php" style="width: 15%;">
         <div class="logo">
 
@@ -18,4 +19,5 @@
             <li><a href="#" class="sign-up">Sign up</a></li>
         </ul>
     </nav>
+    </div>
 </div>

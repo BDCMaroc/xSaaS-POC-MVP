@@ -85,19 +85,19 @@ showImage(currentImageIndex);
 }
 function updateSidebarForMultiplePlaces(places) {
     const sidebar = document.getElementById('sidebar');
-    sidebar.innerHTML = ''; // Clear the sidebar before adding new places
-    const placesToDisplay = places.slice(0, 10);
+    sidebar.innerHTML = '<h2 class="title-city" style="margin-left: 10px;>Casablanca real estate & homes for sale</h2>'; // Clear the sidebar before adding new places
+    const placesToDisplay = places.slice(0, 20);
     placesToDisplay.forEach(place => {
         console.log(place); 
         const placeDetails = document.createElement('div');
-        placeDetails.className = 'place-details';
+        placeDetails.className = 'place-details-for-map';
 
         placeDetails.addEventListener('click', function() {
             window.location.href = `place_details.php?id=${place.id}`;
         });
 
         const imageContainer = document.createElement('div');
-        imageContainer.id = 'image-container';
+        imageContainer.className = 'image-container-for-map';
 
         const placeImage = document.createElement('img');
         placeImage.id = 'place-image';
@@ -152,19 +152,21 @@ function updateSidebarForMultiplePlaces(places) {
         let replacement;
         if (place.Étage) {
             replacement = place.Étage + ' Etage';
-        } else if (place.Nb_de_façades) {
-            replacement = place.Nb_de_façades + ' Nb façades';
-        } else {
+            placeEtage.textContent = `${replacement}`;
+            placeDetailsInfo.appendChild(placeEtage);
+        } else if(place.Parking) {
             replacement = place.Parking + ' Parking';
+            placeEtage.textContent = `${replacement}`;
+            placeDetailsInfo.appendChild(placeEtage);
         }
-        placeEtage.textContent = `${replacement}`;
-        placeDetailsInfo.appendChild(placeEtage);
 
+
+        if(place.Terrasse){
         const placeTerrasse = document.createElement('p');
         placeTerrasse.id = 'place-terrasse';
         placeTerrasse.textContent = `${place.Terrasse ? '1' : '0'} Terasse`;
         placeDetailsInfo.appendChild(placeTerrasse);
-
+        }
         const placeBalcon = document.createElement('p');
         placeBalcon.id = 'place-balcon';
         placeBalcon.textContent = `${place.Balcon} Balcon`;
