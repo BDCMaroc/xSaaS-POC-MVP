@@ -108,6 +108,7 @@
 </div>
 <div class="filter-p2">
 <div class="map-list-btns">
+    
         <button class="list">List</button>
         <a href="maps.php?city=<?= $city; ?>&min_price=<?= $min_price; ?>&max_price=<?= $max_price; ?>&min_superficie=<?= $min_superficie; ?>&max_superficie=<?= $max_superficie; ?>&type=<?= $type; ?>" >
             <button class="map">Map</button>
