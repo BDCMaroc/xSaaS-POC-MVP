@@ -149,7 +149,6 @@ function fetchLocalDataWithFilter(params) {
                 // Check if the marker already exists
                 if (!visibleMarkers.has(uniqueKey)) {
                     const icon = createMarkerIcon(place.Prix, place.Superficie, isZoomedIn);
-
                     const marker = new google.maps.Marker({
                         position: position,
                         map: map,

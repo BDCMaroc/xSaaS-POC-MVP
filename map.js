@@ -90,6 +90,7 @@ google.maps.event.addListener(map, 'zoom_changed', function () {
 
     // Fetch new data and add markers again
     fetchLocalData(map.getBounds());
+    fetchLocalDataInPolygon(polygon);
     }
     previousZoom = zoom; // Update the previous zoom level
 });

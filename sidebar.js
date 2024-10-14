@@ -85,7 +85,7 @@ showImage(currentImageIndex);
 }
 function updateSidebarForMultiplePlaces(places) {
     const sidebar = document.getElementById('sidebar');
-    sidebar.innerHTML = '<h2 class="title-city" style="margin-left: 10px;>Casablanca real estate & homes for sale</h2>'; // Clear the sidebar before adding new places
+    sidebar.innerHTML = ''; // Clear the sidebar before adding new places
     const placesToDisplay = places.slice(0, 20);
     placesToDisplay.forEach(place => {
         console.log(place); 
